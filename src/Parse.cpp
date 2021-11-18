@@ -175,7 +175,7 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 	return 0;
 }
 
-void NoPARSE::seralizeStyle(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
+void NoPARSE::seralizeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
 {
 	writer.Key("Num Sides");
 	writer.Uint(style.sides);
@@ -206,7 +206,7 @@ void NoPARSE::seralizeStyle(rapidjson::Writer< rapidjson::StringBuffer >& writer
 	writer.EndArray();
 }
 
-void NoPARSE::seralizeCMultiStyle(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
+void NoPARSE::seralizeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
 {
 	writer.StartObject();
 		writer.StartArray();
@@ -218,7 +218,7 @@ void NoPARSE::seralizeCMultiStyle(rapidjson::Writer< rapidjson::StringBuffer >& 
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCImage(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt)
+void NoPARSE::seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt)
 {
 	writer.StartObject();
 		writer.Key("File");
@@ -247,7 +247,7 @@ void NoPARSE::seralizeCImage(rapidjson::Writer< rapidjson::StringBuffer >& write
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCDropDown(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt)
+void NoPARSE::seralizeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt)
 {
 	writer.StartObject();
 		writer.Key("File");
@@ -262,7 +262,7 @@ void NoPARSE::seralizeCDropDown(rapidjson::Writer< rapidjson::StringBuffer >& wr
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCInput(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
+void NoPARSE::seralizeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
 {
 	writer.StartObject();
 		writer.Key("Max");
@@ -272,7 +272,7 @@ void NoPARSE::seralizeCInput(rapidjson::Writer< rapidjson::StringBuffer >& write
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCText(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt)
+void NoPARSE::seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt)
 {
 	writer.StartObject();
 		writer.Key("Font");

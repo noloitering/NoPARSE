@@ -48,12 +48,12 @@ namespace NoPARSE
 		
 	};
 	
-	void seralizeCDropDown(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt);
-	void seralizeCImage(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt);
-	void seralizeCInput(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt);
-	void seralizeCMultiStyle(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles);
-	void seralizeCText(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt);
-	void seralizeStyle(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::Style& style);
+	void seralizeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt);
+	void seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt);
+	void seralizeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt);
+	void seralizeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles);
+	void seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt);
+	void seralizeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style);
 }
 
 #endif
