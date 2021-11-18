@@ -44,6 +44,7 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 		// Elements
 		writer.Key("Elements");
 		writer.StartObject();
+			std::map< std::string, size_t > pgIds = pg->getIds();
 			for (auto entry :  pg->getBody())
 			{
 				writer.Key(entry.first.c_str());
@@ -87,6 +88,26 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 							writer.Key("Element");
 						}
 						writer.StartObject();
+							writer.Key("ID");
+							std::string idStr = "";
+							for (auto id : pgIds)
+							{
+								if ( id.second == elem->getId() )
+								{
+									idStr = id.first;
+									
+									break;
+								}
+							}
+							if ( !idStr.empty() )
+							{
+								pgIds.erase(idStr);
+							}
+							else
+							{
+								idStr = std::to_string(elem->getId());
+							}
+							writer.String(idStr.c_str());
 							seralizeStyle(writer, elem->styling());
 							writer.Key("Hover Colour");
 							writer.StartArray();
