@@ -83,8 +83,17 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 					writer.Key("Element");
 				}
 				writer.StartObject();
-					writer.Key("Style");
 					seralizeStyle(writer, elem->styling());
+					writer.Key("Hover Colour");
+					writer.StartArray();
+						Color hoverCol = elem->getHoverCol();
+						writer.Uint(hoverCol.r);
+						writer.Uint(hoverCol.g);
+						writer.Uint(hoverCol.b);
+						writer.Uint(hoverCol.a);
+					writer.EndArray();
+					writer.Key("Inner");
+					writer.String(elem->getInner().c_str());
 					writer.Key("Components");
 					NoGUI::CText eText = elem->getComponent< NoGUI::CText >();
 					NoGUI::CInput eInput = elem->getComponent< NoGUI::CInput >();
@@ -141,35 +150,33 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 
 void NoPARSE::seralizeStyle(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
 {
-	writer.StartObject();
-		writer.Key("Colour");
-		writer.StartArray();
-			writer.Uint(style.backCol.r);
-			writer.Uint(style.backCol.g);
-			writer.Uint(style.backCol.b);
-			writer.Uint(style.backCol.a);
-		writer.EndArray();
-		writer.Key("Outline");
-		writer.StartArray();
-			writer.Uint(style.backCol.r);
-			writer.Uint(style.backCol.g);
-			writer.Uint(style.backCol.b);
-			writer.Uint(style.backCol.a);
-			writer.Uint(style.outlineThick);
-		writer.EndArray();
-		writer.Key("Position");
-		writer.StartArray();
-			writer.Uint(style.pos.x);
-			writer.Uint(style.pos.y);
-		writer.EndArray();
-		writer.Key("Size");
-		writer.StartArray();
-			writer.Uint(style.radius.x);
-			writer.Uint(style.radius.y);
-		writer.EndArray();
-		writer.Key("Num Sides");
-		writer.Uint(style.sides);
-	writer.EndObject();
+	writer.Key("Num Sides");
+	writer.Uint(style.sides);
+	writer.Key("Position");
+	writer.StartArray();
+		writer.Uint(style.pos.x);
+		writer.Uint(style.pos.y);
+	writer.EndArray();
+	writer.Key("Size");
+	writer.StartArray();
+		writer.Uint(style.radius.x);
+		writer.Uint(style.radius.y);
+	writer.EndArray();
+	writer.Key("Colour");
+	writer.StartArray();
+		writer.Uint(style.backCol.r);
+		writer.Uint(style.backCol.g);
+		writer.Uint(style.backCol.b);
+		writer.Uint(style.backCol.a);
+	writer.EndArray();
+	writer.Key("Outline");
+	writer.StartArray();
+		writer.Uint(style.backCol.r);
+		writer.Uint(style.backCol.g);
+		writer.Uint(style.backCol.b);
+		writer.Uint(style.backCol.a);
+		writer.Uint(style.outlineThick);
+	writer.EndArray();
 }
 
 void NoPARSE::seralizeCMultiStyle(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
