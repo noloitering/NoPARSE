@@ -45,9 +45,45 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 		writer.EndObject();
 		// Elements
 		writer.Key("Elements");
-		writer.StartArray();
+		writer.StartObject();
 			for (auto elem :  pg->getElements())
 			{
+				if ( dynamic_cast< NoGUI::CheckBox* >(elem.get()) )
+				{
+					writer.Key("CheckBox");
+				}
+				else if ( dynamic_cast< NoGUI::Button* >(elem.get()) )
+				{
+					writer.Key("Button");
+				}
+				else if ( dynamic_cast< NoGUI::Input* >(elem.get()) )
+				{
+					writer.Key("Input");
+				}
+				else if ( dynamic_cast< NoGUI::InputButton* >(elem.get()) )
+				{
+					writer.Key("InputButton");
+				}
+				else if ( dynamic_cast< NoGUI::InputToggle* >(elem.get()) )
+				{
+					writer.Key("InputToggle");
+				}
+				else if ( dynamic_cast< NoGUI::InputTrigger* >(elem.get()) )
+				{
+					writer.Key("InputTrigger");
+				}
+				else if ( dynamic_cast< NoGUI::Toggle* >(elem.get()) )
+				{
+					writer.Key("Toggle");
+				}
+				else if ( dynamic_cast< NoGUI::Trigger* >(elem.get()) )
+				{
+					writer.Key("Trigger");
+				}
+				else
+				{
+					writer.Key("Element");
+				}
 				writer.StartObject();
 					writer.Key("Style");
 					seralizeStyle(writer, elem->styling());
@@ -86,7 +122,7 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 					writer.EndObject();
 				writer.EndObject();
 			}
-		writer.EndArray();
+		writer.EndObject();
 	writer.EndObject();
 	// Write out
 	std::ofstream out(path);
