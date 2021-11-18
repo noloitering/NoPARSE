@@ -1,76 +1,76 @@
 {
     "Components": {
-        "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Shadow":[2.0,-2.0,0,0,0,255]}
+        "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE","Shadow":[2.0,-2.0,0,0,0,255]}
     },
     "Elements": {
         "Element": {
             "Style":{"Colour":[100,100,100,255],"Outline":[100,100,100,255,0],"Position":[640,565],"Size":[640,515],"Num Sides":4},
             "Components": {
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Shadow":[2.0,-2.0,0,0,0,255]}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE","Shadow":[2.0,-2.0,0,0,0,255]}
             }
         },
         "Button": {
             "Style":{"Colour":[130,130,130,255],"Outline":[130,130,130,255,1],"Position":[640,765],"Size":[115,50],"Num Sides":4},
             "Components": {
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"CENTER","Cropping":"NONE"}
             }
         },
         "Button": {
             "Style":{"Colour":[0,228,48,255],"Outline":[0,228,48,255,1],"Position":[503,620],"Size":[25,25],"Num Sides":4},
             "Components": {
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"CENTER","Cropping":"NONE"}
             }
         },
         "Input": {
             "Style":{"Colour":[200,200,200,255],"Outline":[200,200,200,255,2],"Position":[640,320],"Size":[112,25],"Num Sides":4},
             "Components": {
                 "Input":{"Max":50,"Index":0},
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE"}
             }
         },
         "Input": {
             "Style":{"Colour":[200,200,200,255],"Outline":[200,200,200,255,2],"Position":[640,420],"Size":[112,25],"Num Sides":4},
             "Components": {
                 "Input":{"Max":10,"Index":0},
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE"}
             }
         },
         "Input": {
             "Style":{"Colour":[200,200,200,255],"Outline":[200,200,200,255,2],"Position":[640,520],"Size":[112,25],"Num Sides":4},
             "Components": {
                 "Input":{"Max":50,"Index":0},
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE"}
             }
         },
         "Input": {
             "Style":{"Colour":[200,200,200,255],"Outline":[200,200,200,255,2],"Position":[640,620],"Size":[112,25],"Num Sides":4},
             "Components": {
                 "Input":{"Max":200,"Index":0},
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE"}
             }
         },
         "Element": {
             "Style":{"Colour":[0,0,0,1],"Outline":[0,0,0,1,0],"Position":[640,290],"Size":[112,25],"Num Sides":4},
             "Components": {
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Shadow":[2.0,-2.0,0,0,0,255]}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE","Shadow":[2.0,-2.0,0,0,0,255]}
             }
         },
         "Element": {
             "Style":{"Colour":[0,0,0,1],"Outline":[0,0,0,1,0],"Position":[640,390],"Size":[112,25],"Num Sides":4},
             "Components": {
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Shadow":[2.0,-2.0,0,0,0,255]}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE","Shadow":[2.0,-2.0,0,0,0,255]}
             }
         },
         "Element": {
             "Style":{"Colour":[0,0,0,1],"Outline":[0,0,0,1,0],"Position":[640,490],"Size":[112,25],"Num Sides":4},
             "Components": {
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Shadow":[2.0,-2.0,0,0,0,255]}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE","Shadow":[2.0,-2.0,0,0,0,255]}
             }
         },
         "Element": {
             "Style":{"Colour":[0,0,0,1],"Outline":[0,0,0,1,0],"Position":[640,590],"Size":[112,25],"Num Sides":4},
             "Components": {
-                "Text":{"Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Shadow":[2.0,-2.0,0,0,0,255]}
+                "Text":{"Font":"","Size":25.0,"Colour":[190,33,55,255],"Margin":[0.0,0.0],"Whitespace":[2.0,0.0],"Angle":0.0,"Wrapping":"DOWN","Align":"RIGHT","Cropping":"NONE","Shadow":[2.0,-2.0,0,0,0,255]}
             }
         }
     }

@@ -4,7 +4,6 @@ int main(int argc, char ** argv)
 {
 	NoGUI::Style elemStyle = {BLACK, RAYWHITE, (Vector2){640, 40}, (Vector2){75, 35}, 4, 4, 0};
 	NoGUI::GUIManager manager = NoGUI::GUIManager();
-//	std::shared_ptr< NoGUI::Element > element = manager.addElement< NoGUI::Element >(elemStyle, "Element", "Base");
 	Color INVISIBLE = (Color){0, 0, 0, 1};
 	Color BACKGROUND = (Color){100, 100, 100, 255};
 	Vector2 center = {640, 540};
@@ -60,13 +59,8 @@ int main(int argc, char ** argv)
 	std::shared_ptr< NoGUI::Element > msgInput = manager.addElement< NoGUI::Input >(msgInStyle, "", "Input");
 	// components
 IPLabel->addComponent< NoGUI::CText >(labelStyle);
-//	portLabel->addComponent< NoGUI::CText >(labelStyle);
-//	nameLabel->addComponent< NoGUI::CText >(labelStyle);
-//	msgLabel->addComponent< NoGUI::CText >(labelStyle);
 	connectButton->addComponent< NoGUI::CText >(buttonStyle);
 	sendButton->addComponent< NoGUI::CText >(buttonStyle);
-//	joinButton->addComponent< NoGUI::CText >(joinText);
-//	hostButton->addComponent< NoGUI::CText >(hostText);
 //	imgLabel->addComponent< NoGUI::CImage >(joinBack);
 	IPInput->addComponent< NoGUI::CText >(inputStyle);
 	portInput->addComponent< NoGUI::CText >(inputStyle);

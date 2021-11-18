@@ -4,8 +4,6 @@ using namespace NoPARSE;
 
 int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 {
-//	Components pgComps = pg->getComponents();
-//	std::apply([](auto&&... component) {((std::cout << component << '\n'), ...);}, pgComps);
 	NoGUI::CText pgText = pg->getComponent< NoGUI::CText >();
 	NoGUI::CInput pgInput = pg->getComponent< NoGUI::CInput >();
 	NoGUI::CImage pgImage = pg->getComponent< NoGUI::CImage >();
@@ -189,8 +187,8 @@ void NoPARSE::seralizeCMultiStyle(rapidjson::Writer< rapidjson::StringBuffer >& 
 void NoPARSE::seralizeCImage(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt)
 {
 	writer.StartObject();
-//		writer.Key("File");
-//		writer.String(""); // TODO: implement
+		writer.Key("File");
+		writer.String(""); // TODO: implement
 		writer.Key("Scale");
 		writer.StartArray();
 			writer.Double(imageFmt.margin.x);
@@ -203,8 +201,8 @@ void NoPARSE::seralizeCImage(rapidjson::Writer< rapidjson::StringBuffer >& write
 		writer.EndArray();
 		writer.Key("Angle");
 		writer.Double(imageFmt.rotation);
-//		writer.Key("Cropping");
-//		writer.String(CropMap[imageFmt.cropping].c_str());
+		writer.Key("Cropping");
+		writer.String(CropMap.at(imageFmt.cropping).c_str());
 		writer.Key("Back Colour");
 		writer.StartArray();
 			writer.Uint(imageFmt.col.r);
@@ -218,15 +216,15 @@ void NoPARSE::seralizeCImage(rapidjson::Writer< rapidjson::StringBuffer >& write
 void NoPARSE::seralizeCDropDown(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt)
 {
 	writer.StartObject();
-//		writer.Key("File");
-//		writer.String(""); // TODO: implement
+		writer.Key("File");
+		writer.String(""); // TODO: implement
 		writer.Key("Spacing");
 		writer.Double(dropFmt.spacing);
 		writer.EndArray();
-//		writer.Key("Wrapping");
-//		writer.String(WrapMap[dropFmt.wrap].c_str());
-//		writer.Key("Align");
-//		writer.String(AlignMap[dropFmt.align].c_str());
+		writer.Key("Wrapping");
+		writer.String(WrapMap.at(dropFmt.wrap).c_str());
+		writer.Key("Align");
+		writer.String(AlignMap.at(dropFmt.align).c_str());
 	writer.EndObject();
 }
 
@@ -243,8 +241,8 @@ void NoPARSE::seralizeCInput(rapidjson::Writer< rapidjson::StringBuffer >& write
 void NoPARSE::seralizeCText(rapidjson::Writer< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt)
 {
 	writer.StartObject();
-//		writer.Key("Font");
-//		writer.String(""); // TODO: implement
+		writer.Key("Font");
+		writer.String(""); // TODO: implement
 		writer.Key("Size");
 		writer.Double(textFmt.size);
 		writer.Key("Colour");
@@ -266,12 +264,12 @@ void NoPARSE::seralizeCText(rapidjson::Writer< rapidjson::StringBuffer >& writer
 		writer.EndArray();
 		writer.Key("Angle");
 		writer.Double(textFmt.rotation);
-//		writer.Key("Wrapping");
-//		writer.String(WrapMap[textFmt.wrap].c_str());
-//		writer.Key("Align");
-//		writer.String(AlignMap[textFmt.align].c_str());
-//		writer.Key("Cropping");
-//		writer.String(CropMap[textFmt.cropping].c_str());
+		writer.Key("Wrapping");
+		writer.String(WrapMap.at(textFmt.wrap).c_str());
+		writer.Key("Align");
+		writer.String(AlignMap.at(textFmt.align).c_str());
+		writer.Key("Cropping");
+		writer.String(CropMap.at(textFmt.cropping).c_str());
 		if ( textFmt.shadow.draw )
 		{
 			writer.Key("Shadow");
@@ -286,10 +284,3 @@ void NoPARSE::seralizeCText(rapidjson::Writer< rapidjson::StringBuffer >& writer
 		}
 	writer.EndObject();
 }
-
-//void seralizeElement(rapidjson::Writer& writer, std::shared_ptr< NoGUI::Element > element)
-//{
-//	writer.StartObject();
-//		seralizeStyle(writer, elem->styling());
-//	writer.EndObject();
-//}
