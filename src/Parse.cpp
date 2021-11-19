@@ -266,16 +266,11 @@ void NoPARSE::seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 		std::string fontStr = "";
 		if ( textFmt.font && assets )
 		{
-			std::cout << "font and assets exist" << std::endl;
 			NoMEM::FontMap fonts = assets->getAll< Font >();
-			std::cout << fonts.size() << std::endl;
 			for (auto font : fonts)
 			{
-				std::cout << textFmt.font->texture.id << std::endl;
-				std::cout << font.second->texture.id << std::endl;
 				if ( font.second == textFmt.font )
 				{
-					std::cout << font.first << std::endl;
 					fontStr = font.first;
 				}
 			}
