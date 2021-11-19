@@ -47,114 +47,117 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 			std::map< std::string, size_t > pgIds = pg->getIds();
 			for (auto entry :  pg->getBody())
 			{
-				writer.Key(entry.first.c_str());
-				writer.StartObject();
-					for (auto elem : entry.second)
+				writer.Key(entry.first.c_str()); // classname
+				writer.StartArray();
+					for (auto elem : entry.second) // type
 					{
-						if ( dynamic_cast< NoGUI::CheckBox* >(elem.get()) )
-						{
-							writer.Key("CheckBox");
-						}
-						else if ( dynamic_cast< NoGUI::Button* >(elem.get()) )
-						{
-							writer.Key("Button");
-						}
-						else if ( dynamic_cast< NoGUI::Input* >(elem.get()) )
-						{
-							writer.Key("Input");
-						}
-						else if ( dynamic_cast< NoGUI::InputButton* >(elem.get()) )
-						{
-							writer.Key("InputButton");
-						}
-						else if ( dynamic_cast< NoGUI::InputToggle* >(elem.get()) )
-						{
-							writer.Key("InputToggle");
-						}
-						else if ( dynamic_cast< NoGUI::InputTrigger* >(elem.get()) )
-						{
-							writer.Key("InputTrigger");
-						}
-						else if ( dynamic_cast< NoGUI::Toggle* >(elem.get()) )
-						{
-							writer.Key("Toggle");
-						}
-						else if ( dynamic_cast< NoGUI::Trigger* >(elem.get()) )
-						{
-							writer.Key("Trigger");
-						}
-						else
-						{
-							writer.Key("Element");
-						}
 						writer.StartObject();
-							writer.Key("ID");
-							std::string idStr = "";
-							for (auto id : pgIds)
+							if ( dynamic_cast< NoGUI::CheckBox* >(elem.get()) )
 							{
-								if ( id.second == elem->getId() )
-								{
-									idStr = id.first;
-									
-									break;
-								}
+								writer.Key("CheckBox");
 							}
-							if ( !idStr.empty() )
+							else if ( dynamic_cast< NoGUI::Button* >(elem.get()) )
 							{
-								pgIds.erase(idStr);
+								writer.Key("Button");
+							}
+							else if ( dynamic_cast< NoGUI::Input* >(elem.get()) )
+							{
+								writer.Key("Input");
+							}
+							else if ( dynamic_cast< NoGUI::InputButton* >(elem.get()) )
+							{
+								writer.Key("InputButton");
+							}
+							else if ( dynamic_cast< NoGUI::InputToggle* >(elem.get()) )
+							{
+								writer.Key("InputToggle");
+							}
+							else if ( dynamic_cast< NoGUI::InputTrigger* >(elem.get()) )
+							{
+								writer.Key("InputTrigger");
+							}
+							else if ( dynamic_cast< NoGUI::Toggle* >(elem.get()) )
+							{
+								writer.Key("Toggle");
+							}
+							else if ( dynamic_cast< NoGUI::Trigger* >(elem.get()) )
+							{
+								writer.Key("Trigger");
 							}
 							else
 							{
-								idStr = std::to_string(elem->getId());
+								writer.Key("Element");
 							}
-							writer.String(idStr.c_str());
-							seralizeStyle(writer, elem->styling());
-							writer.Key("Hover Colour");
-							writer.StartArray();
-								Color hoverCol = elem->getHoverCol();
-								writer.Uint(hoverCol.r);
-								writer.Uint(hoverCol.g);
-								writer.Uint(hoverCol.b);
-								writer.Uint(hoverCol.a);
-							writer.EndArray();
-							writer.Key("Inner");
-							writer.String(elem->getInner().c_str());
-							writer.Key("Components");
-							NoGUI::CText eText = elem->getComponent< NoGUI::CText >();
-							NoGUI::CInput eInput = elem->getComponent< NoGUI::CInput >();
-							NoGUI::CImage eImage = elem->getComponent< NoGUI::CImage >();
-							NoGUI::CDropDown eDropDown = elem->getComponent< NoGUI::CDropDown >();
-							NoGUI::CMultiStyle eStyles = elem->getComponent< NoGUI::CMultiStyle >();
 							writer.StartObject();
-								if ( eInput.owned )
+								writer.Key("ID");
+								std::string idStr = "";
+								for (auto id : pgIds)
 								{
-									writer.Key("Input");
-									seralizeCInput(writer, eInput);
+									if ( id.second == elem->getId() )
+									{
+										idStr = id.first;
+									
+										break;
+									}
 								}
-								if ( eText.owned )
+								if ( !idStr.empty() )
 								{
-									writer.Key("Text");
-									seralizeCText(writer, eText, assets);
+									pgIds.erase(idStr);
 								}
-								if ( eImage.owned )
+								else
 								{
-									writer.Key("Image");
-									seralizeCImage(writer, eImage, assets);
+									idStr = std::to_string(elem->getId());
 								}
-								if ( eStyles.owned )
-								{
-									writer.Key("MultiStyle");
-									seralizeCMultiStyle(writer, eStyles);
-								}
-								if ( eDropDown.owned )
-								{
-									writer.Key("Drop Down");
-									seralizeCDropDown(writer, eDropDown);
-								}
+								writer.String(idStr.c_str());
+								seralizeStyle(writer, elem->styling());
+								writer.Key("Hover Colour");
+								writer.StartArray();
+									Color hoverCol = elem->getHoverCol();
+									writer.Uint(hoverCol.r);
+									writer.Uint(hoverCol.g);
+									writer.Uint(hoverCol.b);
+									writer.Uint(hoverCol.a);
+								writer.EndArray();
+								writer.Key("Inner");
+								writer.String(elem->getInner().c_str());
+								writer.Key("Components");
+								NoGUI::CText eText = elem->getComponent< NoGUI::CText >();
+								NoGUI::CInput eInput = elem->getComponent< NoGUI::CInput >();
+								NoGUI::CImage eImage = elem->getComponent< NoGUI::CImage >();
+								NoGUI::CDropDown eDropDown = elem->getComponent< NoGUI::CDropDown >();
+								NoGUI::CMultiStyle eStyles = elem->getComponent< NoGUI::CMultiStyle >();
+								writer.StartObject();
+									if ( eInput.owned )
+									{
+										writer.Key("Input");
+										seralizeCInput(writer, eInput);
+									}
+									if ( eText.owned )
+									{
+										writer.Key("Text");
+										seralizeCText(writer, eText, assets);
+									}
+									if ( eImage.owned )
+									{
+										writer.Key("Image");
+										seralizeCImage(writer, eImage, assets);
+									}
+									if ( eStyles.owned )
+									{
+										writer.Key("MultiStyle");
+										seralizeCMultiStyle(writer, eStyles);
+									}
+									if ( eDropDown.owned )
+									{
+										writer.Key("Drop Down");
+										seralizeCDropDown(writer, eDropDown);
+									}
+								writer.EndObject();
 							writer.EndObject();
 						writer.EndObject();
 					}
-				writer.EndObject();
+//				writer.EndObject();
+				writer.EndArray();
 			}
 		writer.EndObject();
 	writer.EndObject();
