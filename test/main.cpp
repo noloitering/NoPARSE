@@ -2,17 +2,17 @@
 
 int main(int argc, char ** argv)
 {
-	NoGUI::Style elemStyle = {BLACK, RAYWHITE, (Vector2){640, 40}, (Vector2){75, 35}, 4, 4, 0};
+	NoMEM::MEMManager assets = NoMEM::MEMManager();
 	NoGUI::GUIManager manager = NoGUI::GUIManager();
+	
 	Color INVISIBLE = (Color){0, 0, 0, 1};
 	Color BACKGROUND = (Color){100, 100, 100, 255};
 	Vector2 center = {640, 540};
+	InitWindow(1280, 1080, "Context");
+	std::shared_ptr< Font > font = assets.addFont("jupiter_crash", "../fonts/jupiter_crash.png");
+	std::shared_ptr< Texture2D > joinImg = assets.addTexture("joinBack", "../imgs/background.png");
 	// text
-	NoGUI::CText titleStyle = NoGUI::CText();
-	titleStyle.col = PURPLE;
-	titleStyle.align = NoGUI::TextAlign::CENTER;
-	titleStyle.size = 50;
-	NoGUI::CText labelStyle = NoGUI::CText();
+	NoGUI::CText labelStyle = NoGUI::CText(font);
 	labelStyle.col = MAROON;
 	labelStyle.align = NoGUI::TextAlign::RIGHT;
 	labelStyle.wrap = NoGUI::TextWrap::DOWN;
@@ -58,10 +58,10 @@ int main(int argc, char ** argv)
 	std::shared_ptr< NoGUI::Element > nameInput = manager.getPage()->addElement< NoGUI::Input >(nameInStyle, "", "Input", "Username");
 	std::shared_ptr< NoGUI::Element > msgInput = manager.getPage()->addElement< NoGUI::Input >(msgInStyle, "", "Input", "Msg");
 	// components
-IPLabel->addComponent< NoGUI::CText >(labelStyle);
+	IPLabel->addComponent< NoGUI::CText >(labelStyle);
 	connectButton->addComponent< NoGUI::CText >(buttonStyle);
 	sendButton->addComponent< NoGUI::CText >(buttonStyle);
-//	imgLabel->addComponent< NoGUI::CImage >(joinBack);
+	imgLabel->addComponent< NoGUI::CImage >(joinImg);
 	IPInput->addComponent< NoGUI::CText >(inputStyle);
 	portInput->addComponent< NoGUI::CText >(inputStyle);
 	nameInput->addComponent< NoGUI::CText >(inputStyle);
@@ -71,5 +71,5 @@ IPLabel->addComponent< NoGUI::CText >(labelStyle);
 	nameInput->addComponent< NoGUI::CInput >(50);
 	msgInput->addComponent< NoGUI::CInput >(200);
 	manager.update();
-	NoGUI::savePage(manager.getPage(0));
+	NoGUI::savePage(manager.getPage(0), std::make_shared< NoMEM::MEMManager >(assets));
 }

@@ -2,7 +2,7 @@
 
 using namespace NoPARSE;
 
-int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
+int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::MEMManager > assets, const std::string& path)
 {
 	NoGUI::CText pgText = pg->getComponent< NoGUI::CText >();
 	NoGUI::CInput pgInput = pg->getComponent< NoGUI::CInput >();
@@ -23,12 +23,12 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 			if ( pgText.owned )
 			{
 				writer.Key("Text");
-				seralizeCText(writer, pgText);
+				seralizeCText(writer, pgText, assets);
 			}
 			if ( pgImage.owned )
 			{
 				writer.Key("Image");
-				seralizeCImage(writer, pgImage);
+				seralizeCImage(writer, pgImage, assets);
 			}
 			if ( pgStyle.owned )
 			{
@@ -134,12 +134,12 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::string path)
 								if ( eText.owned )
 								{
 									writer.Key("Text");
-									seralizeCText(writer, eText);
+									seralizeCText(writer, eText, assets);
 								}
 								if ( eImage.owned )
 								{
 									writer.Key("Image");
-									seralizeCImage(writer, eImage);
+									seralizeCImage(writer, eImage, assets);
 								}
 								if ( eStyles.owned )
 								{
@@ -218,11 +218,23 @@ void NoPARSE::seralizeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuff
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt)
+void NoPARSE::seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	writer.StartObject();
 		writer.Key("File");
-		writer.String(""); // TODO: implement
+		std::string imgStr = "";
+		if ( imageFmt.texture && assets )
+		{
+			NoMEM::TextureMap textures = assets->getAll< Texture2D >();
+			for (auto texture : textures)
+			{
+				if ( texture.second == imageFmt.texture )
+				{
+					imgStr = texture.first;
+				}
+			}
+		}
+		writer.String(imgStr.c_str());
 		writer.Key("Scale");
 		writer.StartArray();
 			writer.Double(imageFmt.margin.x);
@@ -247,36 +259,28 @@ void NoPARSE::seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >&
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt)
-{
-	writer.StartObject();
-		writer.Key("File");
-		writer.String(""); // TODO: implement
-		writer.Key("Spacing");
-		writer.Double(dropFmt.spacing);
-		writer.EndArray();
-		writer.Key("Wrapping");
-		writer.String(WrapMap.at(dropFmt.wrap).c_str());
-		writer.Key("Align");
-		writer.String(AlignMap.at(dropFmt.align).c_str());
-	writer.EndObject();
-}
-
-void NoPARSE::seralizeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
-{
-	writer.StartObject();
-		writer.Key("Max");
-		writer.Uint(inputFmt.cap);
-		writer.Key("Index");
-		writer.Uint(inputFmt.i);
-	writer.EndObject();
-}
-
-void NoPARSE::seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt)
+void NoPARSE::seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	writer.StartObject();
 		writer.Key("Font");
-		writer.String(""); // TODO: implement
+		std::string fontStr = "";
+		if ( textFmt.font && assets )
+		{
+			std::cout << "font and assets exist" << std::endl;
+			NoMEM::FontMap fonts = assets->getAll< Font >();
+			std::cout << fonts.size() << std::endl;
+			for (auto font : fonts)
+			{
+				std::cout << textFmt.font->texture.id << std::endl;
+				std::cout << font.second->texture.id << std::endl;
+				if ( font.second == textFmt.font )
+				{
+					std::cout << font.first << std::endl;
+					fontStr = font.first;
+				}
+			}
+		}
+		writer.String(fontStr.c_str());
 		writer.Key("Size");
 		writer.Double(textFmt.size);
 		writer.Key("Colour");
@@ -316,5 +320,30 @@ void NoPARSE::seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 				writer.Uint(textFmt.shadow.col.a);
 			writer.EndArray();
 		}
+	writer.EndObject();
+}
+
+void NoPARSE::seralizeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt)
+{
+	writer.StartObject();
+		writer.Key("File");
+		writer.String(""); // TODO: implement
+		writer.Key("Spacing");
+		writer.Double(dropFmt.spacing);
+		writer.EndArray();
+		writer.Key("Wrapping");
+		writer.String(WrapMap.at(dropFmt.wrap).c_str());
+		writer.Key("Align");
+		writer.String(AlignMap.at(dropFmt.align).c_str());
+	writer.EndObject();
+}
+
+void NoPARSE::seralizeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
+{
+	writer.StartObject();
+		writer.Key("Max");
+		writer.Uint(inputFmt.cap);
+		writer.Key("Index");
+		writer.Uint(inputFmt.i);
 	writer.EndObject();
 }

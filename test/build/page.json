@@ -1,7 +1,7 @@
 {
     "Components": {
         "Text": {
-            "Font": "",
+            "Font": "jupiter_crash",
             "Size": 25.0,
             "Colour": [
                 190,
@@ -66,7 +66,7 @@
                 "Inner": "Background",
                 "Components": {
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -92,6 +92,25 @@
                             0,
                             0,
                             0,
+                            255
+                        ]
+                    },
+                    "Image": {
+                        "File": "joinBack",
+                        "Scale": [
+                            0.0,
+                            0.0
+                        ],
+                        "Margin": [
+                            0.0,
+                            0.0
+                        ],
+                        "Angle": 0.0,
+                        "Cropping": "FIT",
+                        "Back Colour": [
+                            255,
+                            255,
+                            255,
                             255
                         ]
                     }
@@ -132,7 +151,7 @@
                 "Inner": "Connect",
                 "Components": {
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -188,7 +207,7 @@
                 "Inner": "SEND",
                 "Components": {
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -250,7 +269,7 @@
                         "Index": 0
                     },
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -310,7 +329,7 @@
                         "Index": 0
                     },
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -370,7 +389,7 @@
                         "Index": 0
                     },
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -430,7 +449,7 @@
                         "Index": 0
                     },
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -488,7 +507,7 @@
                 "Inner": "IP Address:",
                 "Components": {
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -552,7 +571,7 @@
                 "Inner": "Port:",
                 "Components": {
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -616,7 +635,7 @@
                 "Inner": "Username:",
                 "Components": {
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
@@ -680,7 +699,7 @@
                 "Inner": "Message:",
                 "Components": {
                     "Text": {
-                        "Font": "",
+                        "Font": "jupiter_crash",
                         "Size": 25.0,
                         "Colour": [
                             190,
