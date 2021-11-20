@@ -18,27 +18,27 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 			if ( pgInput.owned )
 			{
 				writer.Key("Input");
-				seralizeCInput(writer, pgInput);
+				serializeCInput(writer, pgInput);
 			}
 			if ( pgText.owned )
 			{
 				writer.Key("Text");
-				seralizeCText(writer, pgText, assets);
+				serializeCText(writer, pgText, assets);
 			}
 			if ( pgImage.owned )
 			{
 				writer.Key("Image");
-				seralizeCImage(writer, pgImage, assets);
+				serializeCImage(writer, pgImage, assets);
 			}
 			if ( pgStyle.owned )
 			{
 				writer.Key("MultiStyle");
-				seralizeCMultiStyle(writer, pgStyle);
+				serializeCMultiStyle(writer, pgStyle);
 			}
 			if ( pgDropDown.owned )
 			{
 				writer.Key("Drop Down");
-				seralizeCDropDown(writer, pgDropDown);
+				serializeCDropDown(writer, pgDropDown);
 			}
 		writer.EndObject();
 		// Elements
@@ -109,7 +109,7 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 									idStr = std::to_string(elem->getId());
 								}
 								writer.String(idStr.c_str());
-								seralizeStyle(writer, elem->styling());
+								serializeStyle(writer, elem->styling());
 								writer.Key("Hover Colour");
 								writer.StartArray();
 									Color hoverCol = elem->getHoverCol();
@@ -130,33 +130,32 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 									if ( eInput.owned )
 									{
 										writer.Key("Input");
-										seralizeCInput(writer, eInput);
+										serializeCInput(writer, eInput);
 									}
 									if ( eText.owned )
 									{
 										writer.Key("Text");
-										seralizeCText(writer, eText, assets);
+										serializeCText(writer, eText, assets);
 									}
 									if ( eImage.owned )
 									{
 										writer.Key("Image");
-										seralizeCImage(writer, eImage, assets);
+										serializeCImage(writer, eImage, assets);
 									}
 									if ( eStyles.owned )
 									{
 										writer.Key("MultiStyle");
-										seralizeCMultiStyle(writer, eStyles);
+										serializeCMultiStyle(writer, eStyles);
 									}
 									if ( eDropDown.owned )
 									{
-										writer.Key("Drop Down");
-										seralizeCDropDown(writer, eDropDown);
+										writer.Key("Dropdown");
+										serializeCDropDown(writer, eDropDown);
 									}
 								writer.EndObject();
 							writer.EndObject();
 						writer.EndObject();
 					}
-//				writer.EndObject();
 				writer.EndArray();
 			}
 		writer.EndObject();
@@ -178,7 +177,281 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 	return 0;
 }
 
-void NoPARSE::seralizeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
+std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
+{
+	if ( FileExists(path.c_str()) )
+	{
+		FILE* fp = fopen(path.c_str(), "rb"); // non-Windows use "r"
+ 
+		char readBuffer[65536];
+		rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+ 
+		rapidjson::Document d;
+		d.ParseStream(is);
+ 
+		fclose(fp);
+		std::shared_ptr< NoGUI::Page > pg = std::make_shared< NoGUI::Page >();
+		const rapidjson::Value& pgComps = d["Components"];
+		for (auto& v : pgComps.GetObject())
+		{
+			std::string key(v.name.GetString());
+			if ( key == "Text" )
+			{
+				pg->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value));
+			}
+			else if ( key == "Image" )
+			{
+				pg->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value));
+			}
+			else if ( key == "Input" )
+			{
+				pg->addComponent< NoGUI::CInput >(NoPARSE::deserializeCInput(v.value));
+			}
+			else if ( key == "MultiStyle" )
+			{
+				pg->addComponent< NoGUI::CMultiStyle >(NoPARSE::deserializeCMultiStyle(v.value));
+			}
+			else if ( key == "Dropdown" )
+			{
+				pg->addComponent< NoGUI::CDropDown >(NoPARSE::deserializeCDropDown(v.value));
+			}
+		}
+	}
+	else
+	{
+		std::cerr << "could not open JSON file" << std::endl;
+		
+		return nullptr;
+	}
+}
+
+NoGUI::CText NoPARSE::deserializeCText(const rapidjson::Value& textJSON)
+{
+	NoGUI::CText text;
+	Color col;
+	std::string val(textJSON["Align"].GetString());
+	const rapidjson::Value& colArray = textJSON["Colour"];
+	rapidjson::Value::ConstMemberIterator shadowArray = textJSON.FindMember("Shadow");
+	rapidjson::Value::ConstMemberIterator marginArray = textJSON.FindMember("Margin");
+	rapidjson::Value::ConstMemberIterator spaceArray = textJSON.FindMember("Whitespace");
+	rapidjson::Value::ConstMemberIterator wrapIt = textJSON.FindMember("Wrapping");
+	rapidjson::Value::ConstMemberIterator cropIt = textJSON.FindMember("Cropping");
+	rapidjson::Value::ConstMemberIterator angleIt = textJSON.FindMember("Angle");
+	
+	col.r = colArray[0].GetInt();
+	col.g = colArray[1].GetInt();
+	col.b = colArray[2].GetInt();
+	col.a = colArray[3].GetInt();
+	text.col = col;
+	text.size = textJSON["Size"].GetDouble();
+	if (marginArray != textJSON.MemberEnd())
+	{
+		text.margin.x = marginArray->value[0].GetDouble();
+		text.margin.y = marginArray->value[1].GetDouble();
+	}
+	if (spaceArray != textJSON.MemberEnd())
+	{
+		text.spacing.x = spaceArray->value[0].GetDouble();
+		text.spacing.y = spaceArray->value[1].GetDouble();
+	}
+	if (shadowArray != textJSON.MemberEnd())
+	{
+		text.shadow.offset.x = shadowArray->value[0].GetDouble();
+		text.shadow.offset.y = shadowArray->value[1].GetDouble();
+		text.shadow.col.r = shadowArray->value[2].GetInt();
+		text.shadow.col.g = shadowArray->value[3].GetInt();
+		text.shadow.col.b = shadowArray->value[4].GetInt();
+		text.shadow.col.a = shadowArray->value[5].GetInt();
+		text.shadow.draw = true;
+	}
+	for (auto entry : AlignMap)
+	{
+		if ( entry.second ==  val)
+		{
+			text.align = entry.first;
+		}
+	}
+	if ( cropIt != textJSON.MemberEnd() )
+	{
+		val = std::string(cropIt->value.GetString());
+		for (auto entry : CropMap)
+		{
+			if ( entry.second ==  val )
+			{
+				text.cropping = entry.first;
+			}
+		}
+	}
+	if ( wrapIt != textJSON.MemberEnd() )
+	{
+		val = std::string(wrapIt->value.GetString());
+		for (auto entry : WrapMap)
+		{
+			if ( entry.second == val )
+			{
+				text.wrap = entry.first;
+			}
+		}
+	}
+	if ( angleIt != textJSON.MemberEnd() )
+	{
+		text.rotation = angleIt->value.GetDouble();
+	}
+	text.owned = true;
+	
+	return text;
+}
+
+NoGUI::CImage NoPARSE::deserializeCImage(const rapidjson::Value& imgJSON)
+{
+	NoGUI::CImage img;
+	Color col;
+	rapidjson::Value::ConstMemberIterator colArray = imgJSON.FindMember("Back Colour");
+	rapidjson::Value::ConstMemberIterator marginArray = imgJSON.FindMember("Margin");
+	rapidjson::Value::ConstMemberIterator scaleArray = imgJSON.FindMember("Scale");
+	rapidjson::Value::ConstMemberIterator angleIt = imgJSON.FindMember("Angle");
+	rapidjson::Value::ConstMemberIterator cropIt = imgJSON.FindMember("Cropping");
+	
+	if ( colArray != imgJSON.MemberEnd() )
+	{
+		col.r = colArray->value[0].GetInt();
+		col.g = colArray->value[1].GetInt();
+		col.b = colArray->value[2].GetInt();
+		col.a = colArray->value[3].GetInt();
+		img.col = col;
+	}
+	if ( marginArray != imgJSON.MemberEnd() )
+	{
+		img.margin.x = marginArray->value[0].GetDouble();
+		img.margin.y = marginArray->value[1].GetDouble();
+	}
+	if ( scaleArray != imgJSON.MemberEnd() )
+	{
+		img.scale.x = scaleArray->value[0].GetDouble();
+		img.scale.y = scaleArray->value[1].GetDouble();
+	}
+	if ( cropIt != imgJSON.MemberEnd() )
+	{
+		std::string val(cropIt->value.GetString());
+		for (auto entry : CropMap)
+		{
+			if ( entry.second ==  val )
+			{
+				img.cropping = entry.first;
+			}
+		}
+	}
+	if ( angleIt != imgJSON.MemberEnd() )
+	{
+		img.rotation = angleIt->value.GetDouble();
+	}
+	img.owned = true;
+	
+	return img;
+}
+
+NoGUI::CInput NoPARSE::deserializeCInput(const rapidjson::Value& inputJSON)
+{
+	NoGUI::CInput input;
+	Color col;
+	rapidjson::Value::ConstMemberIterator i = inputJSON.FindMember("Index");
+	
+	input.cap = inputJSON["Max"].GetInt();
+	if ( i != inputJSON.MemberEnd() )
+	{
+		input.cap = i->value.GetDouble();
+	}
+	input.owned = true;
+	
+	return input;
+}
+
+NoGUI::CMultiStyle NoPARSE::deserializeCMultiStyle(const rapidjson::Value& stylesJSON)
+{
+	NoGUI::CMultiStyle styles;
+	for (auto& v : stylesJSON.GetArray())
+	{
+		styles.styles.push_back(deserializeStyle(v));
+	}
+	styles.owned = true;
+	
+	return styles;
+}
+
+NoGUI::CDropDown NoPARSE::deserializeCDropDown(const rapidjson::Value& dropJSON)
+{
+	NoGUI::CDropDown dropdown;
+	rapidjson::Value::ConstMemberIterator spaceIt = dropJSON.FindMember("Spacing");
+	rapidjson::Value::ConstMemberIterator wrapIt = dropJSON.FindMember("Wrapping");
+	rapidjson::Value::ConstMemberIterator alignIt = dropJSON.FindMember("Align");
+	
+	if ( alignIt != dropJSON.MemberEnd() )
+	{
+		std::string val(alignIt->value.GetString());
+		for (auto entry : AlignMap)
+		{
+			if ( entry.second ==  val )
+			{
+				dropdown.align = entry.first;
+			}
+		}
+	}
+	if ( wrapIt != dropJSON.MemberEnd() )
+	{
+		std::string val(wrapIt->value.GetString());
+		for (auto entry : WrapMap)
+		{
+			if ( entry.second ==  val )
+			{
+				dropdown.wrap = entry.first;
+			}
+		}
+	}
+	if ( spaceIt != dropJSON.MemberEnd() )
+	{
+		dropdown.spacing = spaceIt->value.GetDouble();
+	}
+	dropdown.owned = true;
+	
+	return dropdown;
+}
+
+NoGUI::Style NoPARSE::deserializeStyle(const rapidjson::Value& elemJSON)
+{
+	NoGUI::Style style;
+	Color col;
+	Color outCol;
+	const rapidjson::Value& colArray = elemJSON["Colour"].GetArray();
+	const rapidjson::Value& sizeArray = elemJSON["Size"].GetArray();
+	const rapidjson::Value& posArray = elemJSON["Position"].GetArray();
+	rapidjson::Value::ConstMemberIterator outlineArray = elemJSON.FindMember("Outline");
+	
+	col.r = colArray[0].GetInt();
+	col.g = colArray[1].GetInt();
+	col.b = colArray[2].GetInt();
+	col.a = colArray[3].GetInt();
+	style.backCol = col;
+	style.sides = elemJSON["Num Sides"].GetInt();
+	style.pos.x = posArray[0].GetDouble();
+	style.pos.y = posArray[1].GetDouble();
+	style.radius.x = sizeArray[0].GetDouble();
+	style.radius.y = sizeArray[1].GetDouble();
+	if ( outlineArray != elemJSON.MemberEnd() )
+	{
+		outCol.r = outlineArray->value[0].GetInt();
+		outCol.g = outlineArray->value[1].GetInt();
+		outCol.b = outlineArray->value[2].GetInt();
+		outCol.a = outlineArray->value[3].GetInt();
+		style.outlineThick = outlineArray->value[4].GetDouble();
+		style.outlineCol = outCol;
+	}
+	
+	return style;
+}
+
+
+
+void NoPARSE::serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
 {
 	writer.Key("Num Sides");
 	writer.Uint(style.sides);
@@ -209,19 +482,21 @@ void NoPARSE::seralizeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 	writer.EndArray();
 }
 
-void NoPARSE::seralizeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
+void NoPARSE::serializeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
 {
 	writer.StartObject();
 		writer.StartArray();
 			for (auto style : styles.styles)
 			{
-				seralizeStyle(writer, style);
+				writer.StartObject();
+					serializeStyle(writer, style);
+				writer.EndObject();
 			}
 		writer.EndArray();
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoPARSE::serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	writer.StartObject();
 		writer.Key("File");
@@ -262,7 +537,7 @@ void NoPARSE::seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >&
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoPARSE::serializeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	writer.StartObject();
 		writer.Key("Font");
@@ -321,7 +596,7 @@ void NoPARSE::seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt)
+void NoPARSE::serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt)
 {
 	writer.StartObject();
 		writer.Key("File");
@@ -336,7 +611,7 @@ void NoPARSE::seralizeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
+void NoPARSE::serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
 {
 	writer.StartObject();
 		writer.Key("Max");

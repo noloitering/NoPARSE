@@ -72,4 +72,5 @@ int main(int argc, char ** argv)
 	msgInput->addComponent< NoGUI::CInput >(200);
 	manager.update();
 	NoGUI::savePage(manager.getPage(0), std::make_shared< NoMEM::MEMManager >(assets));
+	std::shared_ptr< NoGUI::Page > testPg = NoGUI::loadPage("./page.json");
 }

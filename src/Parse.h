@@ -5,10 +5,12 @@
 
 #include "../NoGUI/src/GUI.h"
 #include "../NoMEM/src/NoMEM.h"
+#include "../include/rapidjson/document.h"
+#include "../include/rapidjson/filereadstream.h"
+#include "../include/rapidjson/prettywriter.h"
 #include "../include/rapidjson/reader.h"
 #include "../include/rapidjson/stringbuffer.h"
 #include "../include/rapidjson/writer.h"
-#include "../include/rapidjson/prettywriter.h"
 
 namespace NoGUI
 {
@@ -48,12 +50,18 @@ namespace NoPARSE
 		
 	};
 	
-	void seralizeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt);
-	void seralizeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets);
-	void seralizeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt);
-	void seralizeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles);
-	void seralizeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets);
-	void seralizeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style);
+	NoGUI::CText deserializeCText(const rapidjson::Value& textJSON);
+	NoGUI::CImage deserializeCImage(const rapidjson::Value& imgJSON);
+	NoGUI::CInput deserializeCInput(const rapidjson::Value& inputJSON);
+	NoGUI::CMultiStyle deserializeCMultiStyle(const rapidjson::Value& stylesJSON);
+	NoGUI::CDropDown deserializeCDropDown(const rapidjson::Value& dropJSON);
+	NoGUI::Style deserializeStyle(const rapidjson::Value& elemJSON);
+	void serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt);
+	void serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets);
+	void serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt);
+	void serializeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles);
+	void serializeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets);
+	void serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style);
 }
 
 #endif
