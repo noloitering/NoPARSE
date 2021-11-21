@@ -192,6 +192,7 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 		fclose(fp);
 		std::shared_ptr< NoGUI::Page > pg = std::make_shared< NoGUI::Page >();
 		const rapidjson::Value& pgComps = d["Components"];
+		const rapidjson::Value& pgElems = d["Elements"];
 		for (auto& v : pgComps.GetObject())
 		{
 			std::string key(v.name.GetString());
@@ -216,6 +217,61 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 				pg->addComponent< NoGUI::CDropDown >(NoPARSE::deserializeCDropDown(v.value));
 			}
 		}
+		for (auto& classGroup : pgElems.GetObject())
+		{
+			for (auto& elemData : classGroup.value.GetArray()  )
+			{
+				for (auto& elem : elemData.GetObject()) // should only be one iteration. We just don't know what the key is going to be
+				{
+					const rapidjson::Value& data = elem.value.GetObject();
+					std::string elemType(elem.name.GetString());
+					NoGUI::Style elemStyle = deserializeStyle(data);
+					std::string elemInner(data["Inner"].GetString());
+					std::string elemId(data["ID"].GetString());
+					std::string elemTag(classGroup.name.GetString());
+					std::shared_ptr< NoGUI::Element > newElem;
+					if ( elemType == "Element" )
+					{
+						newElem = pg->addElement< NoGUI::Element >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "CheckBox" )
+					{
+						newElem = pg->addElement< NoGUI::CheckBox >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "Button" )
+					{
+						newElem = pg->addElement< NoGUI::Button >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "Input" )
+					{
+						newElem = pg->addElement< NoGUI::Input >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "InputButton" )
+					{
+						newElem = pg->addElement< NoGUI::InputButton >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "InputToggle" )
+					{
+						newElem = pg->addElement< NoGUI::InputToggle >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "InputTrigger" )
+					{
+						newElem = pg->addElement< NoGUI::InputTrigger >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "Toggle" )
+					{
+						newElem = pg->addElement< NoGUI::Toggle >(elemStyle, elemInner, elemTag, elemId);
+					}
+					else if ( elemType == "Trigger" )
+					{
+						newElem = pg->addElement< NoGUI::Toggle >(elemStyle, elemInner, elemTag, elemId);
+					}
+				}
+			}
+		}
+		pg->update();
+		
+		return pg;
 	}
 	else
 	{
