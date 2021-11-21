@@ -225,6 +225,7 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 				{
 					const rapidjson::Value& data = elem.value.GetObject();
 					const rapidjson::Value& hoverArray = data["Hover Colour"].GetArray();
+					const rapidjson::Value& elemComps = data["Components"];
 					std::string elemType(elem.name.GetString());
 					NoGUI::Style elemStyle = deserializeStyle(data);
 					std::string elemInner(data["Inner"].GetString());
@@ -273,7 +274,41 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 					{
 						newElem = pg->addElement< NoGUI::Trigger >(elemStyle, elemInner, elemTag, elemId);
 					}
+					else
+					{
+						std::cerr << "Could not parse Element type " << elemType << std::endl;
+						
+						return nullptr;
+					}
 					newElem->setHoverCol(hovCol);
+					for (auto& v : elemComps.GetObject())
+					{
+						std::string key(v.name.GetString());
+						if ( key == "Text" )
+						{
+							newElem->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value));
+						}
+						else if ( key == "Image" )
+						{
+							newElem->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value));
+						}
+						else if ( key == "Input" )
+						{
+							newElem->addComponent< NoGUI::CInput >(NoPARSE::deserializeCInput(v.value));
+						}
+						else if ( key == "MultiStyle" )
+						{
+							newElem->addComponent< NoGUI::CMultiStyle >(NoPARSE::deserializeCMultiStyle(v.value));
+						}
+						else if ( key == "Dropdown" )
+						{
+							newElem->addComponent< NoGUI::CDropDown >(NoPARSE::deserializeCDropDown(v.value));
+						}
+						else
+						{
+							std::cerr << "Could not parse Component type " << key << std::endl;
+						}
+					}
 				}
 			}
 		}

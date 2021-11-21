@@ -1,0 +1,757 @@
+{
+    "Components": {
+        "Text": {
+            "Font": "",
+            "Size": 25.0,
+            "Colour": [
+                190,
+                33,
+                55,
+                255
+            ],
+            "Margin": [
+                0.0,
+                0.0
+            ],
+            "Whitespace": [
+                2.0,
+                0.0
+            ],
+            "Angle": 0.0,
+            "Wrapping": "DOWN",
+            "Align": "RIGHT",
+            "Cropping": "NONE",
+            "Shadow": [
+                2.0,
+                -2.0,
+                0,
+                0,
+                0,
+                255
+            ]
+        }
+    },
+    "Elements": {
+        "AImage": [
+            {
+                "Element": {
+                    "ID": "BackgroundImg",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        565
+                    ],
+                    "Size": [
+                        640,
+                        515
+                    ],
+                    "Colour": [
+                        100,
+                        100,
+                        100,
+                        255
+                    ],
+                    "Outline": [
+                        100,
+                        100,
+                        100,
+                        255,
+                        0
+                    ],
+                    "Hover Colour": [
+                        100,
+                        100,
+                        100,
+                        255
+                    ],
+                    "Inner": "Background",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE",
+                            "Shadow": [
+                                2.0,
+                                -2.0,
+                                0,
+                                0,
+                                0,
+                                255
+                            ]
+                        },
+                        "Image": {
+                            "File": "",
+                            "Scale": [
+                                0.0,
+                                0.0
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Cropping": "FIT",
+                            "Back Colour": [
+                                255,
+                                255,
+                                255,
+                                255
+                            ]
+                        }
+                    }
+                }
+            }
+        ],
+        "Button": [
+            {
+                "Button": {
+                    "ID": "Launcher",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        765
+                    ],
+                    "Size": [
+                        115,
+                        50
+                    ],
+                    "Colour": [
+                        130,
+                        130,
+                        130,
+                        255
+                    ],
+                    "Outline": [
+                        130,
+                        130,
+                        130,
+                        255,
+                        1
+                    ],
+                    "Hover Colour": [
+                        120,
+                        120,
+                        120,
+                        255
+                    ],
+                    "Inner": "Connect",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "CENTER",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            },
+            {
+                "Button": {
+                    "ID": "2",
+                    "Num Sides": 4,
+                    "Position": [
+                        503,
+                        620
+                    ],
+                    "Size": [
+                        25,
+                        25
+                    ],
+                    "Colour": [
+                        0,
+                        228,
+                        48,
+                        255
+                    ],
+                    "Outline": [
+                        0,
+                        228,
+                        48,
+                        255,
+                        1
+                    ],
+                    "Hover Colour": [
+                        246,
+                        218,
+                        38,
+                        255
+                    ],
+                    "Inner": "SEND",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "CENTER",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            }
+        ],
+        "Input": [
+            {
+                "Input": {
+                    "ID": "IP",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        320
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Outline": [
+                        200,
+                        200,
+                        200,
+                        255,
+                        2
+                    ],
+                    "Hover Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Inner": "",
+                    "Components": {
+                        "Input": {
+                            "Max": 0,
+                            "Index": 0
+                        },
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            },
+            {
+                "Input": {
+                    "ID": "Port",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        420
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Outline": [
+                        200,
+                        200,
+                        200,
+                        255,
+                        2
+                    ],
+                    "Hover Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Inner": "",
+                    "Components": {
+                        "Input": {
+                            "Max": 0,
+                            "Index": 0
+                        },
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            },
+            {
+                "Input": {
+                    "ID": "Username",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        520
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Outline": [
+                        200,
+                        200,
+                        200,
+                        255,
+                        2
+                    ],
+                    "Hover Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Inner": "",
+                    "Components": {
+                        "Input": {
+                            "Max": 0,
+                            "Index": 0
+                        },
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            },
+            {
+                "Input": {
+                    "ID": "Msg",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        620
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Outline": [
+                        200,
+                        200,
+                        200,
+                        255,
+                        2
+                    ],
+                    "Hover Colour": [
+                        200,
+                        200,
+                        200,
+                        255
+                    ],
+                    "Inner": "",
+                    "Components": {
+                        "Input": {
+                            "Max": 0,
+                            "Index": 0
+                        },
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            }
+        ],
+        "Label": [
+            {
+                "Element": {
+                    "ID": "3",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        290
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Outline": [
+                        0,
+                        0,
+                        0,
+                        1,
+                        0
+                    ],
+                    "Hover Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Inner": "IP Address:",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE",
+                            "Shadow": [
+                                2.0,
+                                -2.0,
+                                0,
+                                0,
+                                0,
+                                255
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "Element": {
+                    "ID": "4",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        390
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Outline": [
+                        0,
+                        0,
+                        0,
+                        1,
+                        0
+                    ],
+                    "Hover Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Inner": "Port:",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE",
+                            "Shadow": [
+                                2.0,
+                                -2.0,
+                                0,
+                                0,
+                                0,
+                                255
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "Element": {
+                    "ID": "5",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        490
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Outline": [
+                        0,
+                        0,
+                        0,
+                        1,
+                        0
+                    ],
+                    "Hover Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Inner": "Username:",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE",
+                            "Shadow": [
+                                2.0,
+                                -2.0,
+                                0,
+                                0,
+                                0,
+                                255
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "Element": {
+                    "ID": "6",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        590
+                    ],
+                    "Size": [
+                        112,
+                        25
+                    ],
+                    "Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Outline": [
+                        0,
+                        0,
+                        0,
+                        1,
+                        0
+                    ],
+                    "Hover Colour": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Inner": "Message:",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 25.0,
+                            "Colour": [
+                                190,
+                                33,
+                                55,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                2.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "DOWN",
+                            "Align": "RIGHT",
+                            "Cropping": "NONE",
+                            "Shadow": [
+                                2.0,
+                                -2.0,
+                                0,
+                                0,
+                                0,
+                                255
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

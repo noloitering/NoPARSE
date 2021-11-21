@@ -73,4 +73,5 @@ int main(int argc, char ** argv)
 	manager.update();
 	NoGUI::savePage(manager.getPage(0), std::make_shared< NoMEM::MEMManager >(assets));
 	std::shared_ptr< NoGUI::Page > testPg = NoGUI::loadPage("./page.json");
+	NoGUI::savePage(testPg, std::make_shared< NoMEM::MEMManager >(assets), "./page(copy).json");
 }
