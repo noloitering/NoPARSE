@@ -224,12 +224,19 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 				for (auto& elem : elemData.GetObject()) // should only be one iteration. We just don't know what the key is going to be
 				{
 					const rapidjson::Value& data = elem.value.GetObject();
+					const rapidjson::Value& hoverArray = data["Hover Colour"].GetArray();
 					std::string elemType(elem.name.GetString());
 					NoGUI::Style elemStyle = deserializeStyle(data);
 					std::string elemInner(data["Inner"].GetString());
 					std::string elemId(data["ID"].GetString());
 					std::string elemTag(classGroup.name.GetString());
 					std::shared_ptr< NoGUI::Element > newElem;
+					
+					Color hovCol;
+					hovCol.r = hoverArray[0].GetInt();
+					hovCol.g = hoverArray[1].GetInt();
+					hovCol.b = hoverArray[2].GetInt();
+					hovCol.a = hoverArray[3].GetInt();
 					if ( elemType == "Element" )
 					{
 						newElem = pg->addElement< NoGUI::Element >(elemStyle, elemInner, elemTag, elemId);
@@ -264,8 +271,9 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 					}
 					else if ( elemType == "Trigger" )
 					{
-						newElem = pg->addElement< NoGUI::Toggle >(elemStyle, elemInner, elemTag, elemId);
+						newElem = pg->addElement< NoGUI::Trigger >(elemStyle, elemInner, elemTag, elemId);
 					}
+					newElem->setHoverCol(hovCol);
 				}
 			}
 		}
