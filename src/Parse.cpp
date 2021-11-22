@@ -170,14 +170,14 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 	}
 	else
 	{
-		std::cout << sb.GetString() << std::endl;
+		std::cout << "saving page to: " << path << std::endl;
 		out << sb.GetString() << std::endl;
 	}
 	
 	return 0;
 }
 
-std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
+std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	if ( FileExists(path.c_str()) )
 	{
@@ -198,11 +198,11 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 			std::string key(v.name.GetString());
 			if ( key == "Text" )
 			{
-				pg->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value));
+				pg->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value, assets));
 			}
 			else if ( key == "Image" )
 			{
-				pg->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value));
+				pg->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value, assets));
 			}
 			else if ( key == "Input" )
 			{
@@ -286,11 +286,11 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 						std::string key(v.name.GetString());
 						if ( key == "Text" )
 						{
-							newElem->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value));
+							newElem->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value, assets));
 						}
 						else if ( key == "Image" )
 						{
-							newElem->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value));
+							newElem->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value, assets));
 						}
 						else if ( key == "Input" )
 						{
@@ -324,11 +324,12 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path)
 	}
 }
 
-NoGUI::CText NoPARSE::deserializeCText(const rapidjson::Value& textJSON)
+NoGUI::CText NoPARSE::deserializeCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::CText text;
 	Color col;
 	std::string val(textJSON["Align"].GetString());
+	std::string fontKey(textJSON["Font"].GetString());
 	const rapidjson::Value& colArray = textJSON["Colour"];
 	rapidjson::Value::ConstMemberIterator shadowArray = textJSON.FindMember("Shadow");
 	rapidjson::Value::ConstMemberIterator marginArray = textJSON.FindMember("Margin");
@@ -343,6 +344,58 @@ NoGUI::CText NoPARSE::deserializeCText(const rapidjson::Value& textJSON)
 	col.a = colArray[3].GetInt();
 	text.col = col;
 	text.size = textJSON["Size"].GetDouble();
+	if ( assets )
+	{
+		// check to see if already loaded
+		std::shared_ptr< Font > font;
+		NoMEM::FontMap fonts = assets->getAll< Font >();
+		for (auto fontEntry : fonts)
+		{
+			if ( fontEntry.first == fontKey )
+			{
+				font = fontEntry.second;
+			}
+		}
+		if ( font )
+		{
+			text.font = font;
+		}
+		else
+		{
+			// check to see if in custom paths
+			auto found = assets->conf.find(fontKey);
+			if ( found != assets->conf.customEnd() )
+			{
+				font = assets->addFont(fontKey, found->second);
+			}
+			if ( font )
+			{
+				text.font = font;
+			}
+			else
+			{
+				// try loading from MEMManager's path
+				font = assets->addFont(fontKey);
+				if ( font )
+				{
+					text.font = font;
+				}
+				else
+				{
+					// try loading as path
+					font = assets->addFont(fontKey, fontKey);
+					if ( font )
+					{
+						text.font == font;
+					}
+					else
+					{
+						std::cerr << "Could not load font: " << fontKey << std::endl;
+					}
+				}
+			}
+		}
+	}
 	if (marginArray != textJSON.MemberEnd())
 	{
 		text.margin.x = marginArray->value[0].GetDouble();
@@ -401,16 +454,69 @@ NoGUI::CText NoPARSE::deserializeCText(const rapidjson::Value& textJSON)
 	return text;
 }
 
-NoGUI::CImage NoPARSE::deserializeCImage(const rapidjson::Value& imgJSON)
+NoGUI::CImage NoPARSE::deserializeCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::CImage img;
 	Color col;
+	std::string textureKey(imgJSON["File"].GetString());
 	rapidjson::Value::ConstMemberIterator colArray = imgJSON.FindMember("Back Colour");
 	rapidjson::Value::ConstMemberIterator marginArray = imgJSON.FindMember("Margin");
 	rapidjson::Value::ConstMemberIterator scaleArray = imgJSON.FindMember("Scale");
 	rapidjson::Value::ConstMemberIterator angleIt = imgJSON.FindMember("Angle");
 	rapidjson::Value::ConstMemberIterator cropIt = imgJSON.FindMember("Cropping");
 	
+	if ( assets )
+	{
+		// check to see if already loaded
+		std::shared_ptr< Texture2D > texture;
+		NoMEM::TextureMap textures = assets->getAll< Texture2D >();
+		for (auto textureEntry : textures)
+		{
+			if ( textureEntry.first == textureKey )
+			{
+				texture = textureEntry.second;
+			}
+		}
+		if ( texture )
+		{
+			img.texture = texture;
+		}
+		else
+		{
+			// check to see if in custom paths
+			auto found = assets->conf.find(textureKey);
+			if ( found != assets->conf.customEnd() )
+			{
+				texture = assets->addTexture(textureKey, found->second);
+			}
+			if ( texture )
+			{
+				img.texture = texture;
+			}
+			else
+			{
+				// try loading from MEMManager's path
+				texture = assets->addTexture(textureKey);
+				if ( texture )
+				{
+					img.texture = texture;
+				}
+				else
+				{
+					// try loading as path
+					texture = assets->addTexture(textureKey, textureKey);
+					if ( texture )
+					{
+						img.texture == texture;
+					}
+					else
+					{
+						std::cerr << "Could not load texture: " << textureKey << std::endl;
+					}
+				}
+			}
+		}
+	}
 	if ( colArray != imgJSON.MemberEnd() )
 	{
 		col.r = colArray->value[0].GetInt();

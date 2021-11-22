@@ -15,7 +15,7 @@
 namespace NoGUI
 {
 	int savePage(std::shared_ptr< Page > pg, std::shared_ptr< NoMEM::MEMManager > assets=nullptr, const std::string& path="./page.json");
-	std::shared_ptr< Page > loadPage(std::string path);
+	std::shared_ptr< Page > loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 }
 
 namespace NoPARSE
@@ -50,8 +50,8 @@ namespace NoPARSE
 		
 	};
 	
-	NoGUI::CText deserializeCText(const rapidjson::Value& textJSON);
-	NoGUI::CImage deserializeCImage(const rapidjson::Value& imgJSON);
+	NoGUI::CText deserializeCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	NoGUI::CImage deserializeCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets);
 	NoGUI::CInput deserializeCInput(const rapidjson::Value& inputJSON);
 	NoGUI::CMultiStyle deserializeCMultiStyle(const rapidjson::Value& stylesJSON);
 	NoGUI::CDropDown deserializeCDropDown(const rapidjson::Value& dropJSON);

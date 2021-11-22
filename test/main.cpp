@@ -2,15 +2,15 @@
 
 int main(int argc, char ** argv)
 {
-	NoMEM::MEMManager assets = NoMEM::MEMManager();
+	std::shared_ptr< NoMEM::MEMManager > assets = std::make_shared< NoMEM::MEMManager >();
 	NoGUI::GUIManager manager = NoGUI::GUIManager();
 	
 	Color INVISIBLE = (Color){0, 0, 0, 1};
 	Color BACKGROUND = (Color){100, 100, 100, 255};
 	Vector2 center = {640, 540};
 	InitWindow(1280, 1080, "Context");
-	std::shared_ptr< Font > font = assets.addFont("jupiter_crash", "../fonts/jupiter_crash.png");
-	std::shared_ptr< Texture2D > joinImg = assets.addTexture("joinBack", "../imgs/background.png");
+	std::shared_ptr< Font > font = assets->addFont("jupiter_crash", "../fonts/jupiter_crash.png");
+	std::shared_ptr< Texture2D > joinImg = assets->addTexture("joinBack", "../imgs/background.png");
 	// text
 	NoGUI::CText labelStyle = NoGUI::CText(font);
 	labelStyle.col = MAROON;
@@ -71,7 +71,8 @@ int main(int argc, char ** argv)
 	nameInput->addComponent< NoGUI::CInput >(50);
 	msgInput->addComponent< NoGUI::CInput >(200);
 	manager.update();
-	NoGUI::savePage(manager.getPage(0), std::make_shared< NoMEM::MEMManager >(assets));
-	std::shared_ptr< NoGUI::Page > testPg = NoGUI::loadPage("./page.json");
-	NoGUI::savePage(testPg, std::make_shared< NoMEM::MEMManager >(assets), "./page(copy).json");
+	NoGUI::savePage(manager.getPage(0), assets);
+	std::shared_ptr< NoGUI::Page > testPg = NoGUI::loadPage("./page.json", assets);
+	NoGUI::savePage(testPg, assets, "./page(copy).json");
+	assets->clear();
 }
