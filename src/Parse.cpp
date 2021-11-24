@@ -4,43 +4,11 @@ using namespace NoPARSE;
 
 int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::MEMManager > assets, const std::string& path)
 {
-	NoGUI::CText pgText = pg->getComponent< NoGUI::CText >();
-	NoGUI::CInput pgInput = pg->getComponent< NoGUI::CInput >();
-	NoGUI::CImage pgImage = pg->getComponent< NoGUI::CImage >();
-	NoGUI::CDropDown pgDropDown = pg->getComponent< NoGUI::CDropDown >();
-	NoGUI::CMultiStyle pgStyle = pg->getComponent< NoGUI::CMultiStyle >();
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter< rapidjson::StringBuffer > writer(sb);
 	writer.StartObject();
 		// Page Components
-		writer.Key("Components");
-		writer.StartObject();
-			if ( pgInput.owned )
-			{
-				writer.Key("Input");
-				serializeCInput(writer, pgInput);
-			}
-			if ( pgText.owned )
-			{
-				writer.Key("Text");
-				serializeCText(writer, pgText, assets);
-			}
-			if ( pgImage.owned )
-			{
-				writer.Key("Image");
-				serializeCImage(writer, pgImage, assets);
-			}
-			if ( pgStyle.owned )
-			{
-				writer.Key("MultiStyle");
-				serializeCMultiStyle(writer, pgStyle);
-			}
-			if ( pgDropDown.owned )
-			{
-				writer.Key("Drop Down");
-				serializeCDropDown(writer, pgDropDown);
-			}
-		writer.EndObject();
+		serializeComponents(writer, pg->getComponents(), assets);
 		// Elements
 		writer.Key("Elements");
 		writer.StartObject();
@@ -51,130 +19,34 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 				writer.StartArray();
 					for (auto elem : entry.second) // type
 					{
-						writer.StartObject();
-							if ( dynamic_cast< NoGUI::CheckBox* >(elem.get()) )
+						std::string idStr = "";
+						for (auto id : pgIds)
+						{
+							if ( id.second == elem->getId() )
 							{
-								writer.Key("CheckBox");
-							}
-							else if ( dynamic_cast< NoGUI::Button* >(elem.get()) )
-							{
-								writer.Key("Button");
-							}
-							else if ( dynamic_cast< NoGUI::Input* >(elem.get()) )
-							{
-								writer.Key("Input");
-							}
-							else if ( dynamic_cast< NoGUI::InputButton* >(elem.get()) )
-							{
-								writer.Key("InputButton");
-							}
-							else if ( dynamic_cast< NoGUI::InputToggle* >(elem.get()) )
-							{
-								writer.Key("InputToggle");
-							}
-							else if ( dynamic_cast< NoGUI::InputTrigger* >(elem.get()) )
-							{
-								writer.Key("InputTrigger");
-							}
-							else if ( dynamic_cast< NoGUI::Toggle* >(elem.get()) )
-							{
-								writer.Key("Toggle");
-							}
-							else if ( dynamic_cast< NoGUI::Trigger* >(elem.get()) )
-							{
-								writer.Key("Trigger");
-							}
-							else
-							{
-								writer.Key("Element");
-							}
-							writer.StartObject();
-								writer.Key("ID");
-								std::string idStr = "";
-								for (auto id : pgIds)
-								{
-									if ( id.second == elem->getId() )
-									{
-										idStr = id.first;
+								idStr = id.first;
 									
-										break;
-									}
-								}
-								if ( !idStr.empty() )
-								{
-									pgIds.erase(idStr);
-								}
-								else
-								{
-									idStr = std::to_string(elem->getId());
-								}
-								writer.String(idStr.c_str());
-								serializeStyle(writer, elem->styling());
-								writer.Key("Hover Colour");
-								writer.StartArray();
-									Color hoverCol = elem->getHoverCol();
-									writer.Uint(hoverCol.r);
-									writer.Uint(hoverCol.g);
-									writer.Uint(hoverCol.b);
-									writer.Uint(hoverCol.a);
-								writer.EndArray();
-								writer.Key("Inner");
-								writer.String(elem->getInner().c_str());
-								writer.Key("Components");
-								NoGUI::CText eText = elem->getComponent< NoGUI::CText >();
-								NoGUI::CInput eInput = elem->getComponent< NoGUI::CInput >();
-								NoGUI::CImage eImage = elem->getComponent< NoGUI::CImage >();
-								NoGUI::CDropDown eDropDown = elem->getComponent< NoGUI::CDropDown >();
-								NoGUI::CMultiStyle eStyles = elem->getComponent< NoGUI::CMultiStyle >();
-								writer.StartObject();
-									if ( eInput.owned )
-									{
-										writer.Key("Input");
-										serializeCInput(writer, eInput);
-									}
-									if ( eText.owned )
-									{
-										writer.Key("Text");
-										serializeCText(writer, eText, assets);
-									}
-									if ( eImage.owned )
-									{
-										writer.Key("Image");
-										serializeCImage(writer, eImage, assets);
-									}
-									if ( eStyles.owned )
-									{
-										writer.Key("MultiStyle");
-										serializeCMultiStyle(writer, eStyles);
-									}
-									if ( eDropDown.owned )
-									{
-										writer.Key("Dropdown");
-										serializeCDropDown(writer, eDropDown);
-									}
-								writer.EndObject();
-							writer.EndObject();
-						writer.EndObject();
+								break;
+							}
+						}
+						if ( !idStr.empty() )
+						{
+							pgIds.erase(idStr);
+						}
+						else
+						{
+							idStr = std::to_string(elem->getId());
+						}
+						seralizeElement(writer, elem, idStr, assets);
 					}
 				writer.EndArray();
 			}
 		writer.EndObject();
 	writer.EndObject();
 	// Write out
-	std::ofstream out(path);
-	if (!out)
-	{
-		std::cerr << "Could not open file for saving" << std::endl;
-			
-		return 1;
-	}
-	else
-	{
-		std::cout << "saving page to: " << path << std::endl;
-		out << sb.GetString() << std::endl;
-	}
+	int res = writeFile(sb, path);
 	
-	return 0;
+	return res;
 }
 
 std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets)
@@ -586,36 +458,38 @@ NoGUI::CMultiStyle NoPARSE::deserializeCMultiStyle(const rapidjson::Value& style
 NoGUI::CDropDown NoPARSE::deserializeCDropDown(const rapidjson::Value& dropJSON)
 {
 	NoGUI::CDropDown dropdown;
-	rapidjson::Value::ConstMemberIterator spaceIt = dropJSON.FindMember("Spacing");
-	rapidjson::Value::ConstMemberIterator wrapIt = dropJSON.FindMember("Wrapping");
-	rapidjson::Value::ConstMemberIterator alignIt = dropJSON.FindMember("Align");
+//	rapidjson::Value::ConstMemberIterator spaceIt = dropJSON.FindMember("Spacing");
+//	rapidjson::Value::ConstMemberIterator wrapIt = dropJSON.FindMember("Wrapping");
+//	rapidjson::Value::ConstMemberIterator alignIt = dropJSON.FindMember("Align");
+//	
+//	if ( alignIt != dropJSON.MemberEnd() )
+//	{
+//		std::string val(alignIt->value.GetString());
+//		for (auto entry : AlignMap)
+//		{
+//			if ( entry.second ==  val )
+//			{
+//				dropdown.align = entry.first;
+//			}
+//		}
+//	}
+//	if ( wrapIt != dropJSON.MemberEnd() )
+//	{
+//		std::string val(wrapIt->value.GetString());
+//		for (auto entry : WrapMap)
+//		{
+//			if ( entry.second ==  val )
+//			{
+//				dropdown.wrap = entry.first;
+//			}
+//		}
+//	}
+//	if ( spaceIt != dropJSON.MemberEnd() )
+//	{
+//		dropdown.spacing = spaceIt->value.GetDouble();
+//	}
 	
-	if ( alignIt != dropJSON.MemberEnd() )
-	{
-		std::string val(alignIt->value.GetString());
-		for (auto entry : AlignMap)
-		{
-			if ( entry.second ==  val )
-			{
-				dropdown.align = entry.first;
-			}
-		}
-	}
-	if ( wrapIt != dropJSON.MemberEnd() )
-	{
-		std::string val(wrapIt->value.GetString());
-		for (auto entry : WrapMap)
-		{
-			if ( entry.second ==  val )
-			{
-				dropdown.wrap = entry.first;
-			}
-		}
-	}
-	if ( spaceIt != dropJSON.MemberEnd() )
-	{
-		dropdown.spacing = spaceIt->value.GetDouble();
-	}
+	
 	dropdown.owned = true;
 	
 	return dropdown;
@@ -654,7 +528,101 @@ NoGUI::Style NoPARSE::deserializeStyle(const rapidjson::Value& elemJSON)
 	return style;
 }
 
+void NoPARSE::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, NoGUI::Components components, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoGUI::CText pgText = std::get< NoGUI::CText >(components);
+	NoGUI::CInput pgInput = std::get< NoGUI::CInput >(components);
+	NoGUI::CImage pgImage = std::get< NoGUI::CImage >(components);
+	NoGUI::CDropDown pgDropDown = std::get< NoGUI::CDropDown >(components);
+	NoGUI::CMultiStyle pgStyle = std::get< NoGUI::CMultiStyle >(components);
+	// Page Components
+	writer.Key("Components");
+	writer.StartObject();
+		if ( pgInput.owned )
+		{
+			writer.Key("Input");
+			serializeCInput(writer, pgInput);
+		}
+		if ( pgText.owned )
+		{
+			writer.Key("Text");
+			serializeCText(writer, pgText, assets);
+		}
+		if ( pgImage.owned )
+		{
+			writer.Key("Image");
+			serializeCImage(writer, pgImage, assets);
+		}
+		if ( pgStyle.owned )
+		{
+			writer.Key("MultiStyle");
+			serializeCMultiStyle(writer, pgStyle);
+		}
+		if ( pgDropDown.owned )
+		{
+			writer.Key("Drop Down");
+			serializeCDropDown(writer, pgDropDown);
+		}
+	writer.EndObject();
+}
 
+void NoPARSE::seralizeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoGUI::Element > elem, const std::string& id, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	writer.StartObject();
+		if ( dynamic_cast< NoGUI::CheckBox* >(elem.get()) )
+		{
+			writer.Key("CheckBox");
+		}
+		else if ( dynamic_cast< NoGUI::Button* >(elem.get()) )
+		{
+			writer.Key("Button");
+		}
+		else if ( dynamic_cast< NoGUI::Input* >(elem.get()) )
+		{
+			writer.Key("Input");
+		}
+		else if ( dynamic_cast< NoGUI::InputButton* >(elem.get()) )
+		{
+			writer.Key("InputButton");
+		}
+		else if ( dynamic_cast< NoGUI::InputToggle* >(elem.get()) )
+		{
+			writer.Key("InputToggle");
+		}
+		else if ( dynamic_cast< NoGUI::InputTrigger* >(elem.get()) )
+		{
+			writer.Key("InputTrigger");
+		}
+		else if ( dynamic_cast< NoGUI::Toggle* >(elem.get()) )
+		{
+			writer.Key("Toggle");
+		}
+		else if ( dynamic_cast< NoGUI::Trigger* >(elem.get()) )
+		{
+			writer.Key("Trigger");
+		}
+		else
+		{
+			writer.Key("Element");
+		}
+		writer.StartObject();
+			writer.Key("ID");
+			writer.String(id.c_str());
+			serializeStyle(writer, elem->styling());
+			writer.Key("Hover Colour");
+			writer.StartArray();
+				Color hoverCol = elem->getHoverCol();
+				writer.Uint(hoverCol.r);
+				writer.Uint(hoverCol.g);
+				writer.Uint(hoverCol.b);
+				writer.Uint(hoverCol.a);
+			writer.EndArray();
+			writer.Key("Inner");
+			writer.String(elem->getInner().c_str());
+			serializeComponents(writer, elem->getComponents(), assets);
+		writer.EndObject();
+	writer.EndObject();
+}
 
 void NoPARSE::serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
 {
@@ -806,13 +774,13 @@ void NoPARSE::serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffe
 	writer.StartObject();
 		writer.Key("File");
 		writer.String(""); // TODO: implement
-		writer.Key("Spacing");
-		writer.Double(dropFmt.spacing);
-		writer.EndArray();
-		writer.Key("Wrapping");
-		writer.String(WrapMap.at(dropFmt.wrap).c_str());
-		writer.Key("Align");
-		writer.String(AlignMap.at(dropFmt.align).c_str());
+//		writer.Key("Spacing");
+//		writer.Double(dropFmt.spacing);
+//		writer.EndArray();
+//		writer.Key("Wrapping");
+//		writer.String(WrapMap.at(dropFmt.wrap).c_str());
+//		writer.Key("Align");
+//		writer.String(AlignMap.at(dropFmt.align).c_str());
 	writer.EndObject();
 }
 
@@ -824,4 +792,22 @@ void NoPARSE::serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 		writer.Key("Index");
 		writer.Uint(inputFmt.i);
 	writer.EndObject();
+}
+
+int NoPARSE::writeFile(rapidjson::StringBuffer& sb, const std::string& path)
+{
+	std::ofstream out(path);
+	if (!out)
+	{
+		std::cerr << "Could not open file for saving" << std::endl;
+			
+		return 1;
+	}
+	else
+	{
+		std::cout << "saving page to: " << path << std::endl;
+		out << sb.GetString() << std::endl;
+	}
+	
+	return 0;
 }
