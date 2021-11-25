@@ -47,17 +47,23 @@ namespace NoPARSE
 	public:
 		Parser(std::unique_ptr< NoMEM::MEMManager > a)
 			: assets(move(a)) {}
-		
 	};
 	
-	NoGUI::CText deserializeCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets);
-	NoGUI::CImage deserializeCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets);
-	NoGUI::CInput deserializeCInput(const rapidjson::Value& inputJSON);
-	NoGUI::CMultiStyle deserializeCMultiStyle(const rapidjson::Value& stylesJSON);
-	NoGUI::CDropDown deserializeCDropDown(const rapidjson::Value& dropJSON);
-	NoGUI::Style deserializeStyle(const rapidjson::Value& elemJSON);
-	NoGUI::Components deserializeComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets);
-	std::shared_ptr< NoGUI::Element > deserializeElement(const rapidjson::Value::ConstMemberIterator& elemJSON, const size_t id, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
+	void deserializeCText(NoGUI::CText& text, const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	void deserializeCImage(NoGUI::CImage& img, const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	void deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& inputJSON);
+	void deserializeCMultiStyle(NoGUI::CMultiStyle& styles, const rapidjson::Value& stylesJSON);
+	void deserializeCDropDown(NoGUI::CDropDown& options, const rapidjson::Value& dropJSON);
+	void deserializeStyle(NoGUI::Style& style, const rapidjson::Value& elemJSON);
+	void deserializeComponents(NoGUI::Components& components, const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	NoGUI::CText loadCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	NoGUI::CImage loadCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	NoGUI::CInput loadCInput(const rapidjson::Value& inputJSON);
+	NoGUI::CMultiStyle loadCMultiStyle(const rapidjson::Value& stylesJSON);
+	NoGUI::CDropDown loadCDropDown(const rapidjson::Value& dropJSON);
+	NoGUI::Style loadStyle(const rapidjson::Value& elemJSON);
+	NoGUI::Components loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	std::shared_ptr< NoGUI::Element > loadElement(const rapidjson::Value::ConstMemberIterator& elemJSON, const size_t id, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 	void serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt);
 	void serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets);
 	void serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt);

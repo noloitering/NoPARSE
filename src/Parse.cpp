@@ -57,7 +57,7 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 		std::shared_ptr< NoGUI::Page > pg = std::make_shared< NoGUI::Page >();
 		const rapidjson::Value& pgComps = d["Components"];
 		const rapidjson::Value& pgElems = d["Elements"];
-		pg->setComponents(deserializeComponents(pgComps, assets));
+		pg->setComponents(loadComponents(pgComps, assets));
 		for (auto& classGroup : pgElems.GetObject())
 		{
 			for (auto& elemData : classGroup.value.GetArray())
@@ -68,7 +68,7 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 					const rapidjson::Value& hoverArray = data["Hover Colour"].GetArray();
 					const rapidjson::Value& elemComps = data["Components"];
 					std::string elemType(elem.name.GetString());
-					NoGUI::Style elemStyle = deserializeStyle(data);
+					NoGUI::Style elemStyle = loadStyle(data);
 					std::string elemInner(data["Inner"].GetString());
 					std::string elemId(data["ID"].GetString());
 					std::string elemTag(classGroup.name.GetString());
@@ -122,7 +122,7 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 						return nullptr;
 					}
 					newElem->setHoverCol(hovCol);
-					newElem->setComponents(deserializeComponents(elemComps, assets));
+					newElem->setComponents(loadComponents(elemComps, assets));
 				}
 			}
 		}
@@ -137,9 +137,8 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 	}
 }
 
-NoGUI::CText NoPARSE::deserializeCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoPARSE::deserializeCText(NoGUI::CText& text, const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
-	NoGUI::CText text;
 	Color col;
 	std::string val(textJSON["Align"].GetString());
 	std::string fontKey(textJSON["Font"].GetString());
@@ -262,14 +261,10 @@ NoGUI::CText NoPARSE::deserializeCText(const rapidjson::Value& textJSON, std::sh
 	{
 		text.rotation = angleIt->value.GetDouble();
 	}
-	text.owned = true;
-	
-	return text;
 }
 
-NoGUI::CImage NoPARSE::deserializeCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoPARSE::deserializeCImage(NoGUI::CImage& img, const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
-	NoGUI::CImage img;
 	Color col;
 	std::string textureKey(imgJSON["File"].GetString());
 	rapidjson::Value::ConstMemberIterator colArray = imgJSON.FindMember("Back Colour");
@@ -363,15 +358,10 @@ NoGUI::CImage NoPARSE::deserializeCImage(const rapidjson::Value& imgJSON, std::s
 	{
 		img.rotation = angleIt->value.GetDouble();
 	}
-	img.owned = true;
-	
-	return img;
 }
 
-NoGUI::CInput NoPARSE::deserializeCInput(const rapidjson::Value& inputJSON)
+void NoPARSE::deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& inputJSON)
 {
-	NoGUI::CInput input;
-	Color col;
 	rapidjson::Value::ConstMemberIterator i = inputJSON.FindMember("Index");
 	
 	input.cap = inputJSON["Max"].GetInt();
@@ -379,24 +369,115 @@ NoGUI::CInput NoPARSE::deserializeCInput(const rapidjson::Value& inputJSON)
 	{
 		input.cap = i->value.GetDouble();
 	}
+}
+
+void NoPARSE::deserializeCMultiStyle(NoGUI::CMultiStyle& styles, const rapidjson::Value& stylesJSON)
+{
+	for (auto& style : stylesJSON.GetArray())
+	{
+		styles.styles.push_back(loadStyle(style));
+	}
+}
+
+void NoPARSE::deserializeStyle(NoGUI::Style& style, const rapidjson::Value& elemJSON)
+{
+	Color col;
+	Color outCol;
+	const rapidjson::Value& colArray = elemJSON["Colour"].GetArray();
+	const rapidjson::Value& sizeArray = elemJSON["Size"].GetArray();
+	const rapidjson::Value& posArray = elemJSON["Position"].GetArray();
+	rapidjson::Value::ConstMemberIterator outlineArray = elemJSON.FindMember("Outline");
+	
+	col.r = colArray[0].GetInt();
+	col.g = colArray[1].GetInt();
+	col.b = colArray[2].GetInt();
+	col.a = colArray[3].GetInt();
+	style.backCol = col;
+	style.sides = elemJSON["Num Sides"].GetInt();
+	style.pos.x = posArray[0].GetDouble();
+	style.pos.y = posArray[1].GetDouble();
+	style.radius.x = sizeArray[0].GetDouble();
+	style.radius.y = sizeArray[1].GetDouble();
+	if ( outlineArray != elemJSON.MemberEnd() )
+	{
+		outCol.r = outlineArray->value[0].GetInt();
+		outCol.g = outlineArray->value[1].GetInt();
+		outCol.b = outlineArray->value[2].GetInt();
+		outCol.a = outlineArray->value[3].GetInt();
+		style.outlineThick = outlineArray->value[4].GetDouble();
+		style.outlineCol = outCol;
+	}
+}
+
+void NoPARSE::deserializeComponents(NoGUI::Components& components, const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoGUI::CText& textComp = std::get< NoGUI::CText >(components);
+	NoGUI::CImage& imageComp = std::get< NoGUI::CImage >(components);
+	NoGUI::CInput& inputComp = std::get< NoGUI::CInput >(components);
+	NoGUI::CMultiStyle& stylesComp = std::get< NoGUI::CMultiStyle >(components);
+	NoGUI::CDropDown& optionsComp = std::get< NoGUI::CDropDown >(components);
+	for (auto& component : compJSON.GetObject())
+	{
+		std::string key(component.name.GetString());
+		if ( key == "Text" )
+		{
+			textComp = NoPARSE::loadCText(component.value, assets);
+		}
+		else if ( key == "Image" )
+		{
+			imageComp = NoPARSE::loadCImage(component.value, assets);
+		}
+		else if ( key == "Input" )
+		{
+			inputComp = NoPARSE::loadCInput(component.value);
+		}
+		else if ( key == "MultiStyle" )
+		{
+			stylesComp = NoPARSE::loadCMultiStyle(component.value);
+		}
+		else if ( key == "Dropdown" )
+		{
+			optionsComp = NoPARSE::loadCDropDown(component.value);
+		}
+	}
+}
+
+NoGUI::CText NoPARSE::loadCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoGUI::CText text;
+	deserializeCText(text, textJSON, assets);
+	text.owned = true;
+	
+	return text;
+}
+
+NoGUI::CImage NoPARSE::loadCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoGUI::CImage img;
+	deserializeCImage(img, imgJSON, assets);
+	img.owned = true;
+	
+	return img;
+}
+
+NoGUI::CInput NoPARSE::loadCInput(const rapidjson::Value& inputJSON)
+{
+	NoGUI::CInput input;
+	deserializeCInput(input, inputJSON);
 	input.owned = true;
 	
 	return input;
 }
 
-NoGUI::CMultiStyle NoPARSE::deserializeCMultiStyle(const rapidjson::Value& stylesJSON)
+NoGUI::CMultiStyle NoPARSE::loadCMultiStyle(const rapidjson::Value& stylesJSON)
 {
 	NoGUI::CMultiStyle styles;
-	for (auto& v : stylesJSON.GetArray())
-	{
-		styles.styles.push_back(deserializeStyle(v));
-	}
 	styles.owned = true;
 	
 	return styles;
 }
 
-NoGUI::CDropDown NoPARSE::deserializeCDropDown(const rapidjson::Value& dropJSON)
+NoGUI::CDropDown NoPARSE::loadCDropDown(const rapidjson::Value& dropJSON)
 {
 	NoGUI::CDropDown dropdown;
 //	rapidjson::Value::ConstMemberIterator spaceIt = dropJSON.FindMember("Spacing");
@@ -436,49 +517,21 @@ NoGUI::CDropDown NoPARSE::deserializeCDropDown(const rapidjson::Value& dropJSON)
 	return dropdown;
 }
 
-NoGUI::Components NoPARSE::deserializeComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+NoGUI::Components NoPARSE::loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::Components components;
-	NoGUI::CText& textComp = std::get< NoGUI::CText >(components);
-	NoGUI::CImage& imageComp = std::get< NoGUI::CImage >(components);
-	NoGUI::CInput& inputComp = std::get< NoGUI::CInput >(components);
-	NoGUI::CMultiStyle& stylesComp = std::get< NoGUI::CMultiStyle >(components);
-	NoGUI::CDropDown& optionsComp = std::get< NoGUI::CDropDown >(components);
-	for (auto& component : compJSON.GetObject())
-	{
-		std::string key(component.name.GetString());
-		if ( key == "Text" )
-		{
-			textComp = NoPARSE::deserializeCText(component.value, assets);
-		}
-		else if ( key == "Image" )
-		{
-			imageComp = NoPARSE::deserializeCImage(component.value, assets);
-		}
-		else if ( key == "Input" )
-		{
-			inputComp = NoPARSE::deserializeCInput(component.value);
-		}
-		else if ( key == "MultiStyle" )
-		{
-			stylesComp = NoPARSE::deserializeCMultiStyle(component.value);
-		}
-		else if ( key == "Dropdown" )
-		{
-			optionsComp = NoPARSE::deserializeCDropDown(component.value);
-		}
-	}
+	deserializeComponents(components, compJSON, assets);
 	
 	return components;
 }
 
-std::shared_ptr< NoGUI::Element > deserializeElement(const rapidjson::Value::ConstMemberIterator& elemJSON, const size_t& id, std::shared_ptr< NoMEM::MEMManager > assets)
+std::shared_ptr< NoGUI::Element > loadElement(const rapidjson::Value::ConstMemberIterator& elemJSON, const size_t& id, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	const rapidjson::Value& data = elemJSON->value.GetObject();
 	const rapidjson::Value& hoverArray = data["Hover Colour"].GetArray();
 	const rapidjson::Value& elemComps = data["Components"];
 	std::string elemType(elemJSON->name.GetString());
-	NoGUI::Style elemStyle = deserializeStyle(data);
+	NoGUI::Style elemStyle = loadStyle(data);
 	std::string elemInner(data["Inner"].GetString());
 	std::string elemId(data["ID"].GetString());
 	std::shared_ptr< NoGUI::Element > newElem;
@@ -533,41 +586,42 @@ std::shared_ptr< NoGUI::Element > deserializeElement(const rapidjson::Value::Con
 //	newElem->setHoverCol(hovCol);
 	if ( assets )
 	{
-		newElem->setComponents(deserializeComponents(elemComps, assets));
+		newElem->setComponents(loadComponents(elemComps, assets));
 	}
 	
 	return newElem;
 }
 
-NoGUI::Style NoPARSE::deserializeStyle(const rapidjson::Value& elemJSON)
+NoGUI::Style NoPARSE::loadStyle(const rapidjson::Value& elemJSON)
 {
 	NoGUI::Style style;
-	Color col;
-	Color outCol;
-	const rapidjson::Value& colArray = elemJSON["Colour"].GetArray();
-	const rapidjson::Value& sizeArray = elemJSON["Size"].GetArray();
-	const rapidjson::Value& posArray = elemJSON["Position"].GetArray();
-	rapidjson::Value::ConstMemberIterator outlineArray = elemJSON.FindMember("Outline");
-	
-	col.r = colArray[0].GetInt();
-	col.g = colArray[1].GetInt();
-	col.b = colArray[2].GetInt();
-	col.a = colArray[3].GetInt();
-	style.backCol = col;
-	style.sides = elemJSON["Num Sides"].GetInt();
-	style.pos.x = posArray[0].GetDouble();
-	style.pos.y = posArray[1].GetDouble();
-	style.radius.x = sizeArray[0].GetDouble();
-	style.radius.y = sizeArray[1].GetDouble();
-	if ( outlineArray != elemJSON.MemberEnd() )
-	{
-		outCol.r = outlineArray->value[0].GetInt();
-		outCol.g = outlineArray->value[1].GetInt();
-		outCol.b = outlineArray->value[2].GetInt();
-		outCol.a = outlineArray->value[3].GetInt();
-		style.outlineThick = outlineArray->value[4].GetDouble();
-		style.outlineCol = outCol;
-	}
+//	Color col;
+//	Color outCol;
+//	const rapidjson::Value& colArray = elemJSON["Colour"].GetArray();
+//	const rapidjson::Value& sizeArray = elemJSON["Size"].GetArray();
+//	const rapidjson::Value& posArray = elemJSON["Position"].GetArray();
+//	rapidjson::Value::ConstMemberIterator outlineArray = elemJSON.FindMember("Outline");
+//	
+//	col.r = colArray[0].GetInt();
+//	col.g = colArray[1].GetInt();
+//	col.b = colArray[2].GetInt();
+//	col.a = colArray[3].GetInt();
+//	style.backCol = col;
+//	style.sides = elemJSON["Num Sides"].GetInt();
+//	style.pos.x = posArray[0].GetDouble();
+//	style.pos.y = posArray[1].GetDouble();
+//	style.radius.x = sizeArray[0].GetDouble();
+//	style.radius.y = sizeArray[1].GetDouble();
+//	if ( outlineArray != elemJSON.MemberEnd() )
+//	{
+//		outCol.r = outlineArray->value[0].GetInt();
+//		outCol.g = outlineArray->value[1].GetInt();
+//		outCol.b = outlineArray->value[2].GetInt();
+//		outCol.a = outlineArray->value[3].GetInt();
+//		style.outlineThick = outlineArray->value[4].GetDouble();
+//		style.outlineCol = outCol;
+//	}
+	deserializeStyle(style, elemJSON);
 	
 	return style;
 }
