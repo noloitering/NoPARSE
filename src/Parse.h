@@ -56,6 +56,8 @@ namespace NoPARSE
 	NoGUI::CMultiStyle deserializeCMultiStyle(const rapidjson::Value& stylesJSON);
 	NoGUI::CDropDown deserializeCDropDown(const rapidjson::Value& dropJSON);
 	NoGUI::Style deserializeStyle(const rapidjson::Value& elemJSON);
+	NoGUI::Components deserializeComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	std::shared_ptr< NoGUI::Element > deserializeElement(const rapidjson::Value::ConstMemberIterator& elemJSON, const size_t id, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 	void serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt);
 	void serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets);
 	void serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt);
@@ -63,7 +65,8 @@ namespace NoPARSE
 	void serializeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets);
 	void serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style);
 	void serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, NoGUI::Components components, std::shared_ptr< NoMEM::MEMManager > assets);
-	void seralizeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoGUI::Element > elem, const std::string& id, std::shared_ptr< NoMEM::MEMManager > assets);
+	void serializeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoGUI::Element > elem, const std::string& id, std::shared_ptr< NoMEM::MEMManager > assets);
+	int readFile(const std::string& path, rapidjson::Document&  d);
 	int writeFile(rapidjson::StringBuffer& sb, const std::string& path);
 }
 

@@ -37,7 +37,7 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 						{
 							idStr = std::to_string(elem->getId());
 						}
-						seralizeElement(writer, elem, idStr, assets);
+						serializeElement(writer, elem, idStr, assets);
 					}
 				writer.EndArray();
 			}
@@ -51,47 +51,16 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 
 std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets)
 {
-	if ( FileExists(path.c_str()) )
+	rapidjson::Document d;
+	if ( readFile(path, d) == 0 )
 	{
-		FILE* fp = fopen(path.c_str(), "rb"); // non-Windows use "r"
- 
-		char readBuffer[65536];
-		rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
- 
-		rapidjson::Document d;
-		d.ParseStream(is);
- 
-		fclose(fp);
 		std::shared_ptr< NoGUI::Page > pg = std::make_shared< NoGUI::Page >();
 		const rapidjson::Value& pgComps = d["Components"];
 		const rapidjson::Value& pgElems = d["Elements"];
-		for (auto& v : pgComps.GetObject())
-		{
-			std::string key(v.name.GetString());
-			if ( key == "Text" )
-			{
-				pg->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value, assets));
-			}
-			else if ( key == "Image" )
-			{
-				pg->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value, assets));
-			}
-			else if ( key == "Input" )
-			{
-				pg->addComponent< NoGUI::CInput >(NoPARSE::deserializeCInput(v.value));
-			}
-			else if ( key == "MultiStyle" )
-			{
-				pg->addComponent< NoGUI::CMultiStyle >(NoPARSE::deserializeCMultiStyle(v.value));
-			}
-			else if ( key == "Dropdown" )
-			{
-				pg->addComponent< NoGUI::CDropDown >(NoPARSE::deserializeCDropDown(v.value));
-			}
-		}
+		pg->setComponents(deserializeComponents(pgComps, assets));
 		for (auto& classGroup : pgElems.GetObject())
 		{
-			for (auto& elemData : classGroup.value.GetArray()  )
+			for (auto& elemData : classGroup.value.GetArray())
 			{
 				for (auto& elem : elemData.GetObject()) // should only be one iteration. We just don't know what the key is going to be
 				{
@@ -153,34 +122,7 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 						return nullptr;
 					}
 					newElem->setHoverCol(hovCol);
-					for (auto& v : elemComps.GetObject())
-					{
-						std::string key(v.name.GetString());
-						if ( key == "Text" )
-						{
-							newElem->addComponent< NoGUI::CText >(NoPARSE::deserializeCText(v.value, assets));
-						}
-						else if ( key == "Image" )
-						{
-							newElem->addComponent< NoGUI::CImage >(NoPARSE::deserializeCImage(v.value, assets));
-						}
-						else if ( key == "Input" )
-						{
-							newElem->addComponent< NoGUI::CInput >(NoPARSE::deserializeCInput(v.value));
-						}
-						else if ( key == "MultiStyle" )
-						{
-							newElem->addComponent< NoGUI::CMultiStyle >(NoPARSE::deserializeCMultiStyle(v.value));
-						}
-						else if ( key == "Dropdown" )
-						{
-							newElem->addComponent< NoGUI::CDropDown >(NoPARSE::deserializeCDropDown(v.value));
-						}
-						else
-						{
-							std::cerr << "Could not parse Component type " << key << std::endl;
-						}
-					}
+					newElem->setComponents(deserializeComponents(elemComps, assets));
 				}
 			}
 		}
@@ -190,8 +132,7 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 	}
 	else
 	{
-		std::cerr << "could not open JSON file" << std::endl;
-		
+
 		return nullptr;
 	}
 }
@@ -495,6 +436,109 @@ NoGUI::CDropDown NoPARSE::deserializeCDropDown(const rapidjson::Value& dropJSON)
 	return dropdown;
 }
 
+NoGUI::Components NoPARSE::deserializeComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoGUI::Components components;
+	NoGUI::CText& textComp = std::get< NoGUI::CText >(components);
+	NoGUI::CImage& imageComp = std::get< NoGUI::CImage >(components);
+	NoGUI::CInput& inputComp = std::get< NoGUI::CInput >(components);
+	NoGUI::CMultiStyle& stylesComp = std::get< NoGUI::CMultiStyle >(components);
+	NoGUI::CDropDown& optionsComp = std::get< NoGUI::CDropDown >(components);
+	for (auto& component : compJSON.GetObject())
+	{
+		std::string key(component.name.GetString());
+		if ( key == "Text" )
+		{
+			textComp = NoPARSE::deserializeCText(component.value, assets);
+		}
+		else if ( key == "Image" )
+		{
+			imageComp = NoPARSE::deserializeCImage(component.value, assets);
+		}
+		else if ( key == "Input" )
+		{
+			inputComp = NoPARSE::deserializeCInput(component.value);
+		}
+		else if ( key == "MultiStyle" )
+		{
+			stylesComp = NoPARSE::deserializeCMultiStyle(component.value);
+		}
+		else if ( key == "Dropdown" )
+		{
+			optionsComp = NoPARSE::deserializeCDropDown(component.value);
+		}
+	}
+	
+	return components;
+}
+
+std::shared_ptr< NoGUI::Element > deserializeElement(const rapidjson::Value::ConstMemberIterator& elemJSON, const size_t& id, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	const rapidjson::Value& data = elemJSON->value.GetObject();
+	const rapidjson::Value& hoverArray = data["Hover Colour"].GetArray();
+	const rapidjson::Value& elemComps = data["Components"];
+	std::string elemType(elemJSON->name.GetString());
+	NoGUI::Style elemStyle = deserializeStyle(data);
+	std::string elemInner(data["Inner"].GetString());
+	std::string elemId(data["ID"].GetString());
+	std::shared_ptr< NoGUI::Element > newElem;
+					
+	Color hovCol;
+	hovCol.r = hoverArray[0].GetInt();
+	hovCol.g = hoverArray[1].GetInt();
+	hovCol.b = hoverArray[2].GetInt();
+	hovCol.a = hoverArray[3].GetInt();
+	if ( elemType == "Element" )
+	{
+		newElem = std::make_shared< NoGUI::Element >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "CheckBox" )
+	{
+		newElem = std::make_shared< NoGUI::CheckBox >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "Button" )
+	{
+		newElem = std::make_shared< NoGUI::Button >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "Input" )
+	{
+		newElem = std::make_shared< NoGUI::Input >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "InputButton" )
+	{
+		newElem = std::make_shared< NoGUI::InputButton >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "InputToggle" )
+	{
+		newElem = std::make_shared< NoGUI::InputToggle >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "InputTrigger" )
+	{
+		newElem = std::make_shared< NoGUI::InputTrigger >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "Toggle" )
+	{
+		newElem = newElem = std::make_shared< NoGUI::Toggle >(id, elemStyle, hovCol, elemInner);
+	}
+	else if ( elemType == "Trigger" )
+	{
+		newElem = std::make_shared< NoGUI::Trigger >(id, elemStyle, hovCol, elemInner);
+	}
+	else
+	{
+		std::cerr << "Could not parse Element type " << elemType << std::endl;
+						
+		return nullptr;
+	}
+//	newElem->setHoverCol(hovCol);
+	if ( assets )
+	{
+		newElem->setComponents(deserializeComponents(elemComps, assets));
+	}
+	
+	return newElem;
+}
+
 NoGUI::Style NoPARSE::deserializeStyle(const rapidjson::Value& elemJSON)
 {
 	NoGUI::Style style;
@@ -566,7 +610,7 @@ void NoPARSE::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuff
 	writer.EndObject();
 }
 
-void NoPARSE::seralizeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoGUI::Element > elem, const std::string& id, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoPARSE::serializeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoGUI::Element > elem, const std::string& id, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	writer.StartObject();
 		if ( dynamic_cast< NoGUI::CheckBox* >(elem.get()) )
@@ -619,7 +663,10 @@ void NoPARSE::seralizeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 			writer.EndArray();
 			writer.Key("Inner");
 			writer.String(elem->getInner().c_str());
-			serializeComponents(writer, elem->getComponents(), assets);
+			if ( assets )
+			{
+				serializeComponents(writer, elem->getComponents(), assets);
+			}
 		writer.EndObject();
 	writer.EndObject();
 }
@@ -810,4 +857,27 @@ int NoPARSE::writeFile(rapidjson::StringBuffer& sb, const std::string& path)
 	}
 	
 	return 0;
+}
+
+int NoPARSE::readFile(const std::string& path, rapidjson::Document&  d)
+{
+	if ( FileExists(path.c_str()) )
+	{
+		FILE* fp = fopen(path.c_str(), "rb"); // non-Windows use "r"
+ 
+		char readBuffer[65536];
+		rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+ 
+		d.ParseStream(is);
+ 
+		fclose(fp);
+		
+		return 0;
+	}
+	else
+	{
+		std::cerr << "could not open JSON file" << std::endl;
+		
+		return 1;
+	}
 }
