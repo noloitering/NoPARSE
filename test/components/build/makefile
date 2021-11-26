@@ -2,7 +2,7 @@
 # paths
 EXE_NAME ?= NoPARSE
 DESTDIR ?= ./
-SRC ?= ../main.cpp ../../src/Parse.cpp ../../NoGUI/src/GUI.cpp
+SRC ?= ../main.cpp ../../../src/Parse.cpp ../../../NoGUI/src/GUI.cpp
 OBJS = $(patsubst %.c, %.o, $(SRC))
 
 # compiler
@@ -14,12 +14,12 @@ PLATFORM ?= PLATFORM_DESKTOP
 BUILD_MODE ?= RELEASE
 
 # libraries
-ENET_INSTALL_PATH ?= ../../../../../include/enet-1.3.17
+ENET_INSTALL_PATH ?= ../../../../../../include/enet-1.3.17
 ENET_HEADERS ?= -I$(ENET_INSTALL_PATH)/include
 # STATIC (.a/.lib) or SHARED (.so/.dll)
 ENET_LIBTYPE ?= STATIC
 
-RAYLIB_INSTALL_PATH ?= ../../../../../include/raylib
+RAYLIB_INSTALL_PATH ?= ../../../../../../include/raylib
 RAYLIB_SRC ?= $(RAYLIB_INSTALL_PATH)/src
 RAYLIB_HEADERS ?= -I$(RAYLIB_SRC) -I$(RAYLIB_SRC)/external -I$(RAYLIB_SRC)/extras
 RAYLIB_LIBS ?= -L$(RAYLIB_INSTALL_PATH) -L$(RAYLIB_SRC)
