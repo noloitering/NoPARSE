@@ -3,8 +3,8 @@
 
 #include <fstream>
 
-#include "../NoGUI/src/GUI.h"
-#include "../NoMEM/src/NoMEM.h"
+#include "../../NoGUI/src/GUI.h"
+#include "../../NoMEM/src/NoMEM.h"
 #include "../include/rapidjson/document.h"
 #include "../include/rapidjson/filereadstream.h"
 #include "../include/rapidjson/prettywriter.h"
