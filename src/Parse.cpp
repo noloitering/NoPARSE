@@ -391,7 +391,7 @@ void NoPARSE::deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& in
 
 void NoPARSE::deserializeCMultiStyle(NoGUI::CMultiStyle& styles, const rapidjson::Value& stylesJSON)
 {
-	for (auto& style : stylesJSON.GetArray())
+	for (auto& style : stylesJSON["Styles"].GetArray())
 	{
 		styles.styles.push_back(loadStyle(style));
 	}
@@ -490,6 +490,7 @@ NoGUI::CInput NoPARSE::loadCInput(const rapidjson::Value& inputJSON)
 NoGUI::CMultiStyle NoPARSE::loadCMultiStyle(const rapidjson::Value& stylesJSON)
 {
 	NoGUI::CMultiStyle styles;
+	deserializeCMultiStyle(styles, stylesJSON);
 	styles.owned = true;
 	
 	return styles;
@@ -746,6 +747,7 @@ void NoPARSE::serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >&
 void NoPARSE::serializeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
 {
 	writer.StartObject();
+		writer.Key("Styles");
 		writer.StartArray();
 			for (auto style : styles.styles)
 			{

@@ -61,7 +61,7 @@ int main(int argc, char ** argv)
 	image->addComponent< NoGUI::CImage >(texture);
 	input->addComponent< NoGUI::CText >(textStyle);
 	input->addComponent< NoGUI::CInput >();
-//	box->addComponent< NoGUI::CMultiStyle >(styles);
+	box->addComponent< NoGUI::CMultiStyle >(styles);
 	box->addComponent< NoGUI::CText >(textStyle);
 	combo->addComponent< NoGUI::CText >(textStyle);
 	manager.update();

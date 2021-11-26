@@ -235,6 +235,82 @@
                             "Wrapping": "NONE",
                             "Align": "CENTER",
                             "Cropping": "NONE"
+                        },
+                        "MultiStyle": {
+                            "Styles": [
+                                {
+                                    "Num Sides": 3,
+                                    "Position": [
+                                        4294967246,
+                                        0
+                                    ],
+                                    "Size": [
+                                        25,
+                                        25
+                                    ],
+                                    "Colour": [
+                                        0,
+                                        0,
+                                        0,
+                                        255
+                                    ],
+                                    "Outline": [
+                                        0,
+                                        0,
+                                        0,
+                                        255,
+                                        1
+                                    ]
+                                },
+                                {
+                                    "Num Sides": 0,
+                                    "Position": [
+                                        0,
+                                        0
+                                    ],
+                                    "Size": [
+                                        25,
+                                        25
+                                    ],
+                                    "Colour": [
+                                        0,
+                                        0,
+                                        0,
+                                        255
+                                    ],
+                                    "Outline": [
+                                        0,
+                                        0,
+                                        0,
+                                        255,
+                                        1
+                                    ]
+                                },
+                                {
+                                    "Num Sides": 4,
+                                    "Position": [
+                                        50,
+                                        0
+                                    ],
+                                    "Size": [
+                                        25,
+                                        25
+                                    ],
+                                    "Colour": [
+                                        0,
+                                        0,
+                                        0,
+                                        255
+                                    ],
+                                    "Outline": [
+                                        0,
+                                        0,
+                                        0,
+                                        255,
+                                        1
+                                    ]
+                                }
+                            ]
                         }
                     }
                 }
