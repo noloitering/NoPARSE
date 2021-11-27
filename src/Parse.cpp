@@ -900,7 +900,7 @@ int NoPARSE::writeFile(rapidjson::StringBuffer& sb, const std::string& path)
 	std::ofstream out(path);
 	if (!out)
 	{
-		std::cerr << "Could not open file for saving" << std::endl;
+		std::cerr << "Could not write file: " << path << std::endl;
 			
 		return 1;
 	}
@@ -930,7 +930,7 @@ int NoPARSE::readFile(const std::string& path, rapidjson::Document&  d)
 	}
 	else
 	{
-		std::cerr << "could not open JSON file" << std::endl;
+		std::cerr << "could not open: " << path << std::endl;
 		
 		return 1;
 	}
