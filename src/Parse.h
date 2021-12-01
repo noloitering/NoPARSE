@@ -18,6 +18,12 @@ namespace NoGUI
 	std::shared_ptr< Page > loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 }
 
+namespace NoMEM
+{
+	int saveAssets(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& path="./assets.json");
+	std::shared_ptr< NoMEM::MEMManager > loadAssets(const std::string& path="./assets.json", const std::string& assetPath="../assets/");
+}
+
 namespace NoPARSE
 {
 	const std::map< NoGUI::Crop, std::string > CropMap = {
@@ -49,6 +55,7 @@ namespace NoPARSE
 			: assets(move(a)) {}
 	};
 	
+	void deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON);
 	void deserializeCText(NoGUI::CText& text, const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets);
 	void deserializeCImage(NoGUI::CImage& img, const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets);
 	void deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& inputJSON);
@@ -67,6 +74,7 @@ namespace NoPARSE
 	NoGUI::Components loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets, std::shared_ptr< NoGUI::Element > dropParent=nullptr);
 	std::shared_ptr< NoGUI::Element > loadElement(const rapidjson::Value::ConstMemberIterator& elemJSON, const size_t id, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 	
+	void serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoMEM::MEMManager > assets);
 	void serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt, std::shared_ptr< NoMEM::MEMManager > assets, std::string path="");
 	void serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets);
 	void serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt);
