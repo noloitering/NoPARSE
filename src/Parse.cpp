@@ -993,8 +993,8 @@ void NoPARSE::serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 		writer.String(imgStr.c_str());
 		writer.Key("Scale");
 		writer.StartArray();
-			writer.Double(imageFmt.margin.x);
-			writer.Double(imageFmt.margin.y);
+			writer.Double(imageFmt.scale.x);
+			writer.Double(imageFmt.scale.y);
 		writer.EndArray();
 		writer.Key("Margin");
 		writer.StartArray();

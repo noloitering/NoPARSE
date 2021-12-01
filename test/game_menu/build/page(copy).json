@@ -108,8 +108,8 @@
                         "Image": {
                             "File": "joinBack",
                             "Scale": [
-                                0.0,
-                                0.0
+                                1.0,
+                                1.0
                             ],
                             "Margin": [
                                 0.0,
