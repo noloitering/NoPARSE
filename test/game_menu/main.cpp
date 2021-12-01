@@ -7,7 +7,7 @@ int main(int argc, char ** argv)
 	
 	Color INVISIBLE = (Color){0, 0, 0, 1};
 	Color BACKGROUND = (Color){100, 100, 100, 255};
-	Vector2 center = {640, 540};
+	Vector2 center = {235, 360};
 	InitWindow(1280, 1080, "Context");
 	std::shared_ptr< Font > font = assets->addFont("jupiter_crash", "../fonts/jupiter_crash.png");
 	std::shared_ptr< Texture2D > joinImg = assets->addTexture("joinBack", "../imgs/background.png");
