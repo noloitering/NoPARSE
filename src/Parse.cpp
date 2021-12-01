@@ -6,8 +6,10 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 {
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter< rapidjson::StringBuffer > writer(sb);
+	// create path for Page DropDown Component
 	char dirChar = '/';
 	std::string dropPath;
+	// replace Page filename with dropdown.json
 	size_t dirPos = path.rfind(dirChar);
 	if (  dirPos != std::string::npos )
 	{
@@ -20,7 +22,7 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 	}
 	writer.StartObject();
 		// Page Components
-		serializeComponents(writer, pg->getComponents(), assets);
+		serializeComponents(writer, pg->getComponents(), assets, dropPath);
 		// Elements
 		writer.Key("Elements");
 		writer.StartObject();
@@ -62,6 +64,35 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 	return res;
 }
 
+int NoMEM::saveAssets(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& path)
+{
+	rapidjson::StringBuffer sb;
+	rapidjson::PrettyWriter< rapidjson::StringBuffer > writer(sb);
+	serializeAssets(writer, assets);
+	
+	int res = writeFile(sb, path);
+	
+	return res;
+}
+
+std::shared_ptr< NoMEM::MEMManager > NoMEM::loadAssets(const std::string& path, const std::string& assetPath)
+{
+	rapidjson::Document d;
+	if ( readFile(path, d) == 0 )
+	{
+		std::shared_ptr< NoMEM::MEMManager > assets = std::make_shared< NoMEM::MEMManager >(assetPath);
+		const rapidjson::Value& assetJSON = d["Assets"].GetObject();
+		deserializeAssets(assets, assetJSON);
+		
+		return assets;
+	}
+	else
+	{
+
+		return nullptr;
+	}
+}
+
 std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	rapidjson::Document d;
@@ -77,6 +108,28 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 	{
 
 		return nullptr;
+	}
+}
+
+void NoPARSE::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON)
+{
+	const rapidjson::Value& fonts = assetJSON["Fonts"];
+	const rapidjson::Value& textures = assetJSON["Textures"];
+	const rapidjson::Value& sprites = assetJSON["Sprites"];
+		
+	for (auto& font : fonts.GetObject())
+	{
+		assets->addFont(font.name.GetString(), font.value.GetString());
+	}
+		
+	for (auto& texture : textures.GetObject())
+	{
+		assets->addTexture(texture.name.GetString(), texture.value.GetString());
+	}
+		
+	for (auto& sprite : sprites.GetObject())
+	{
+		assets->addSprite(sprite.name.GetString(), sprite.value.GetString());
 	}
 }
 
@@ -610,6 +663,150 @@ NoGUI::Style NoPARSE::loadStyle(const rapidjson::Value& elemJSON)
 	return style;
 }
 
+void NoPARSE::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	std::unordered_map< std::string, std::string > customPaths = assets->conf.get();
+	std::string basePath = assets->conf.cwd();
+	std::string fontPath = assets->conf.fontDir;
+	std::string texturePath = assets->conf.textureDir;
+	std::string spritePath = assets->conf.spriteDir;
+	writer.StartObject();
+		writer.Key("Assets");
+		writer.StartObject();
+			writer.Key("Fonts");
+			writer.StartObject();
+				for (auto font : assets->getAll< Font >())
+				{
+					writer.Key(font.first.c_str());
+					std::string out = (fontPath.front() == '.') ? basePath + "/" + fontPath + font.first : fontPath + font.first; // get full path
+					if ( FileExists(out.c_str()) )
+					{
+				
+					}
+					else if ( FileExists(((out + ".ttf").c_str())) )
+					{
+						out += ".ttf";
+					}
+					else if ( FileExists(((out + ".fnt").c_str())) )
+					{
+						out += ".fnt";
+					}
+					else if ( FileExists(((out + ".png").c_str())) )
+					{
+						out += ".png";
+					}
+					else
+					{
+						auto found = customPaths.find(font.first);
+						if ( found != customPaths.end() )
+						{
+							out = (found->second.front() == '.') ? basePath + "/" + found->second : found->second; // get full path
+							customPaths.erase(found);
+						}
+						else
+						{
+							std::cerr << "could not find path for " << font.first << std::endl;
+							
+//							return 1;
+						}
+					}
+					writer.String(out.c_str());
+				}
+			writer.EndObject();
+			
+			writer.Key("Textures");
+			writer.StartObject();
+				for (auto texture : assets->getAll< Texture2D >())
+				{
+					writer.Key(texture.first.c_str());
+					std::string out = (texturePath.front() == '.') ? basePath + "/" + texturePath + texture.first : texturePath + texture.first; // get full path
+					if ( FileExists(out.c_str()) )
+					{
+				
+					}
+					else if ( FileExists(((out + ".png").c_str())) )
+					{
+						out += ".png";
+					}
+					else if ( FileExists(((out + ".gif").c_str())) )
+					{
+						out += ".gif";
+					}
+					else if ( FileExists(((out + ".hdr").c_str())) )
+					{
+						out += ".hdr";
+					}
+					else if ( FileExists(((out + ".dds").c_str())) )
+					{
+						out += ".dds";
+					}
+					else
+					{
+						auto found = customPaths.find(texture.first);
+						if ( found != customPaths.end() )
+						{
+							out = (found->second.front() == '.') ? basePath + "/" + found->second : found->second; // get full path
+							customPaths.erase(found);
+						}
+						else
+						{
+							std::cerr << "could not find path for " << texture.first << std::endl;
+							
+//							return 1;
+						}
+					}
+					writer.String(out.c_str());
+				}
+			writer.EndObject();
+			
+			writer.Key("Sprites");
+			writer.StartObject();
+				for (auto sprite : assets->getAll< NoMEM::Sprite >())
+				{
+					writer.Key(sprite.first.c_str());
+					std::string out = (spritePath.front() == '.') ? basePath + "/" + spritePath + sprite.first : spritePath + sprite.first; // get full path
+					if ( FileExists(out.c_str()) )
+					{
+				
+					}
+					else if ( FileExists(((out + ".png").c_str())) )
+					{
+						out += ".png";
+					}
+					else if ( FileExists(((out + ".gif").c_str())) )
+					{
+						out += ".gif";
+					}
+					else if ( FileExists(((out + ".hdr").c_str())) )
+					{
+						out += ".hdr";
+					}
+					else if ( FileExists(((out + ".dds").c_str())) )
+					{
+						out += ".dds";
+					}
+					else
+					{
+						auto found = customPaths.find(sprite.first);
+						if ( found != customPaths.end() )
+						{
+							out = (found->second.front() == '.') ? basePath + "/" + found->second : found->second; // get full path
+							customPaths.erase(found);
+						}
+						else
+						{
+							std::cerr << "could not find path for " << sprite.first << std::endl;
+							
+//							return 1;
+						}
+					}
+					writer.String(out.c_str());
+				}
+			writer.EndObject();
+		writer.EndObject();
+	writer.EndObject();
+}
+
 void NoPARSE::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, NoGUI::Components components, std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dropPath)
 {
 	NoGUI::CText pgText = std::get< NoGUI::CText >(components);
@@ -772,6 +969,8 @@ void NoPARSE::serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 				if ( texture.second == imageFmt.texture )
 				{
 					imgStr = texture.first;
+					
+					break;
 				}
 			}
 		}

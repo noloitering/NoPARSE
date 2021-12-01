@@ -71,8 +71,12 @@ int main(int argc, char ** argv)
 	nameInput->addComponent< NoGUI::CInput >(50);
 	msgInput->addComponent< NoGUI::CInput >(200);
 	manager.update();
+	NoMEM::saveAssets(assets);
 	NoGUI::savePage(manager.getPage(0), assets);
 	std::shared_ptr< NoGUI::Page > testPg = NoGUI::loadPage("./page.json", assets);
+	std::shared_ptr< NoMEM::MEMManager > testMEM = NoMEM::loadAssets("./assets.json");
+	NoMEM::saveAssets(testMEM, "./assets(copy).json");
 	NoGUI::savePage(testPg, assets, "./page(copy).json");
 	assets->clear();
+	testMEM->clear();
 }
