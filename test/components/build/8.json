@@ -30,5 +30,124 @@
             "Cropping": "NONE"
         }
     },
-    "Elements": {}
+    "Elements": {
+        "Option": [
+            {
+                "Button": {
+                    "ID": "0",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        894
+                    ],
+                    "Size": [
+                        75,
+                        35
+                    ],
+                    "Colour": [
+                        0,
+                        0,
+                        0,
+                        255
+                    ],
+                    "Outline": [
+                        0,
+                        0,
+                        0,
+                        255,
+                        4
+                    ],
+                    "Hover Colour": [
+                        246,
+                        246,
+                        246,
+                        255
+                    ],
+                    "Inner": "Option 1",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 20.0,
+                            "Colour": [
+                                255,
+                                255,
+                                255,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                4.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "NONE",
+                            "Align": "CENTER",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            },
+            {
+                "Button": {
+                    "ID": "1",
+                    "Num Sides": 4,
+                    "Position": [
+                        640,
+                        964
+                    ],
+                    "Size": [
+                        75,
+                        35
+                    ],
+                    "Colour": [
+                        0,
+                        0,
+                        0,
+                        255
+                    ],
+                    "Outline": [
+                        0,
+                        0,
+                        0,
+                        255,
+                        4
+                    ],
+                    "Hover Colour": [
+                        246,
+                        246,
+                        246,
+                        255
+                    ],
+                    "Inner": "Option 2",
+                    "Components": {
+                        "Text": {
+                            "Font": "",
+                            "Size": 20.0,
+                            "Colour": [
+                                255,
+                                255,
+                                255,
+                                255
+                            ],
+                            "Margin": [
+                                0.0,
+                                0.0
+                            ],
+                            "Whitespace": [
+                                4.0,
+                                0.0
+                            ],
+                            "Angle": 0.0,
+                            "Wrapping": "NONE",
+                            "Align": "CENTER",
+                            "Cropping": "NONE"
+                        }
+                    }
+                }
+            }
+        ]
+    }
 }

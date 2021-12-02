@@ -160,7 +160,7 @@
                     "Inner": "Input",
                     "Components": {
                         "Input": {
-                            "Max": 0,
+                            "Max": 256,
                             "Index": 0
                         },
                         "Text": {

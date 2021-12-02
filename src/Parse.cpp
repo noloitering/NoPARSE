@@ -594,6 +594,7 @@ NoGUI::CDropDown NoPARSE::loadCDropDown(const rapidjson::Value& dropJSON, std::s
 	if ( readFile(path, d) == 0 )
 	{
 		deserializePage(d, pg, assets);
+		pg->update();
 	}
 	dropdown.options = pg;
 	dropdown.owned = true;
