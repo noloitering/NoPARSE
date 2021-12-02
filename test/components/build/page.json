@@ -1,4 +1,11 @@
 {
+    "Assets": {
+        "Fonts": {},
+        "Textures": {
+            "ImageText": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/../imgs/ImageText.png"
+        },
+        "Sprites": {}
+    },
     "Components": {},
     "Elements": {
         "Base": [
@@ -98,8 +105,8 @@
                         "Image": {
                             "File": "ImageText",
                             "Scale": [
-                                0.0,
-                                0.0
+                                1.0,
+                                1.0
                             ],
                             "Margin": [
                                 0.0,
@@ -665,7 +672,7 @@
                             "Cropping": "NONE"
                         },
                         "Drop Down": {
-                            "File": "./8.json",
+                            "File": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/8.json",
                             "Wrapping": "DOWN"
                         }
                     }

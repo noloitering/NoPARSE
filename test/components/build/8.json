@@ -1,4 +1,11 @@
 {
+    "Assets": {
+        "Fonts": {},
+        "Textures": {
+            "ImageText": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/../imgs/ImageText.png"
+        },
+        "Sprites": {}
+    },
     "Components": {
         "Text": {
             "Font": "",
