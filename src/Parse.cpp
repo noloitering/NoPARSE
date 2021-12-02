@@ -20,6 +20,10 @@ int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::M
 		dirChar = '\\';
 		dropPath = path.substr(0, path.rfind(dirChar) + 1) + "dropdown.json";
 	}
+	if ( dropPath.front() == '.' ) // convert to full path
+	{
+		dropPath = std::string(GetWorkingDirectory()) + dropPath.substr(dropPath.find(dirChar), dropPath.size());
+	}
 	writer.StartObject();
 		// Loaded Files
 		if ( assets )
@@ -918,7 +922,7 @@ void NoPARSE::serializeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer 
 			{
 				if ( dropPath.empty() )
 				{
-					dropPath = "./" + id + ".json";
+					dropPath = std::string(GetWorkingDirectory()) + "/" + id + ".json";
 				}
 				serializeComponents(writer, elem->getComponents(), assets, dropPath);
 			}
@@ -1081,11 +1085,11 @@ void NoPARSE::serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffe
 		std::shared_ptr< NoGUI::Element > dropParent = dropFmt.options->getParent();
 		if ( dropParent )
 		{
-			path = "./" + std::to_string(dropParent->getId()) + ".json";
+			path = std::string(GetWorkingDirectory()) + "/" + std::to_string(dropParent->getId()) + ".json";
 		}
 		else
 		{
-			path = "./dropdown.json";
+			path = std::string(GetWorkingDirectory()) + "/dropdown.json";
 		}
 	}
 	writer.StartObject();
