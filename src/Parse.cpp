@@ -456,11 +456,10 @@ void NoPARSE::deserializeCImage(NoGUI::CImage& img, const rapidjson::Value& imgJ
 void NoPARSE::deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& inputJSON)
 {
 	rapidjson::Value::ConstMemberIterator i = inputJSON.FindMember("Index");
-	
 	input.cap = inputJSON["Max"].GetInt();
 	if ( i != inputJSON.MemberEnd() )
 	{
-		input.cap = i->value.GetDouble();
+		input.i = i->value.GetDouble();
 	}
 }
 
