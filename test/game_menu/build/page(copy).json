@@ -281,7 +281,7 @@
                     "Inner": "",
                     "Components": {
                         "Input": {
-                            "Max": 0,
+                            "Max": 50,
                             "Index": 0
                         },
                         "Text": {
@@ -343,7 +343,7 @@
                     "Inner": "",
                     "Components": {
                         "Input": {
-                            "Max": 0,
+                            "Max": 10,
                             "Index": 0
                         },
                         "Text": {
@@ -405,7 +405,7 @@
                     "Inner": "",
                     "Components": {
                         "Input": {
-                            "Max": 0,
+                            "Max": 50,
                             "Index": 0
                         },
                         "Text": {
@@ -467,7 +467,7 @@
                     "Inner": "",
                     "Components": {
                         "Input": {
-                            "Max": 0,
+                            "Max": 200,
                             "Index": 0
                         },
                         "Text": {
