@@ -671,7 +671,7 @@
                             "Align": "CENTER",
                             "Cropping": "NONE"
                         },
-                        "Drop Down": {
+                        "DropDown": {
                             "File": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/8.json",
                             "Wrapping": "DOWN"
                         }
