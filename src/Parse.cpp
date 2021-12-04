@@ -222,7 +222,31 @@ void NoPARSE::deserializePage(rapidjson::Document& d, std::shared_ptr< NoGUI::Pa
 					std::cerr << "Could not parse Element type " << elemType << std::endl;
 				}
 				newElem->setHoverCol(hovCol);
-				newElem->setComponents(loadComponents(elemComps, assets, newElem));
+				for (auto& elemComp : elemComps.GetObject())
+				{
+					std::string compType = std::string(elemComp.name.GetString());
+					if ( compType == "Text" )
+					{
+						newElem->addComponent< NoGUI::CText >(loadCText(elemComp.value.GetObject(), assets));
+					}
+					else if ( compType == "Image" )
+					{
+						newElem->addComponent< NoGUI::CImage >(loadCImage(elemComp.value.GetObject(), assets));
+					}
+					else if ( compType == "MultiStyle" )
+					{
+						newElem->addComponent< NoGUI::CMultiStyle >(loadCMultiStyle(elemComp.value.GetObject()));
+					}
+					else if ( compType == "Input" )
+					{
+						newElem->addComponent< NoGUI::CInput >(loadCInput(elemComp.value.GetObject()));
+					}
+					else if ( compType == "DropDown" )
+					{
+						newElem->addComponent< NoGUI::CDropDown >(loadCDropDown(elemComp.value.GetObject(), newElem, assets));
+					}
+				}
+//				newElem->setComponents(loadComponents(elemComps, assets, newElem)); // this overwrites any components the Page added.
 			}
 		}
 	}
@@ -527,7 +551,7 @@ void NoPARSE::deserializeComponents(NoGUI::Components& components, const rapidjs
 		{
 			stylesComp = NoPARSE::loadCMultiStyle(component.value);
 		}
-		else if ( key == "Drop Down" )
+		else if ( key == "DropDown" )
 		{
 			optionsComp = NoPARSE::loadCDropDown(component.value, dropParent, assets);
 		}
@@ -859,7 +883,7 @@ void NoPARSE::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuff
 		}
 		if ( pgDropDown.owned )
 		{
-			writer.Key("Drop Down");
+			writer.Key("DropDown");
 			serializeCDropDown(writer, pgDropDown, assets, dropPath);
 		}
 	writer.EndObject();
