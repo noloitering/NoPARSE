@@ -520,7 +520,7 @@ void NoPARSE::deserializeStyle(NoGUI::Style& style, const rapidjson::Value& elem
 		outCol.g = outlineArray->value[1].GetInt();
 		outCol.b = outlineArray->value[2].GetInt();
 		outCol.a = outlineArray->value[3].GetInt();
-		style.outlineThick = outlineArray->value[4].GetDouble();
+		style.outlineThick = outlineArray->value[4].GetInt();
 		style.outlineCol = outCol;
 	}
 }
@@ -977,10 +977,10 @@ void NoPARSE::serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >&
 	writer.EndArray();
 	writer.Key("Outline");
 	writer.StartArray();
-		writer.Uint(style.backCol.r);
-		writer.Uint(style.backCol.g);
-		writer.Uint(style.backCol.b);
-		writer.Uint(style.backCol.a);
+		writer.Uint(style.outlineCol.r);
+		writer.Uint(style.outlineCol.g);
+		writer.Uint(style.outlineCol.b);
+		writer.Uint(style.outlineCol.a);
 		writer.Uint(style.outlineThick);
 	writer.EndArray();
 }
