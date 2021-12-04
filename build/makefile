@@ -1,3 +1,26 @@
+#**************************************************************************************************
+#
+#   raylib makefile for Desktop platforms, Raspberry Pi, Android and HTML5
+#
+#   Copyright (c) 2013-2021 Ramon Santamaria (@raysan5)
+#
+#   This software is provided "as-is", without any express or implied warranty. In no event
+#   will the authors be held liable for any damages arising from the use of this software.
+#
+#   Permission is granted to anyone to use this software for any purpose, including commercial
+#   applications, and to alter it and redistribute it freely, subject to the following restrictions:
+#
+#     1. The origin of this software must not be misrepresented; you must not claim that you
+#     wrote the original software. If you use this software in a product, an acknowledgment
+#     in the product documentation would be appreciated but is not required.
+#
+#     2. Altered source versions must be plainly marked as such, and must not be misrepresented
+#     as being the original software.
+#
+#     3. This notice may not be removed or altered from any source distribution.
+#
+#**************************************************************************************************
+
 # -- CONFIGURATION --
 # paths
 EXE_NAME ?= NoPARSE
@@ -14,20 +37,15 @@ PLATFORM ?= PLATFORM_DESKTOP
 BUILD_MODE ?= RELEASE
 
 # libraries
-ENET_INSTALL_PATH ?= ../../../../include/enet-1.3.17
-ENET_HEADERS ?= -I$(ENET_INSTALL_PATH)/include
-# STATIC (.a/.lib) or SHARED (.so/.dll)
-ENET_LIBTYPE ?= STATIC
-
-RAYLIB_INSTALL_PATH ?= ../../../../include/raylib
+RAYLIB_INSTALL_PATH ?= ../NoGUI/examples/include/raylib
 RAYLIB_SRC ?= $(RAYLIB_INSTALL_PATH)/src
 RAYLIB_HEADERS ?= -I$(RAYLIB_SRC) -I$(RAYLIB_SRC)/external -I$(RAYLIB_SRC)/extras
 RAYLIB_LIBS ?= -L$(RAYLIB_INSTALL_PATH) -L$(RAYLIB_SRC)
 RAYLIB_LIBTYPE ?= STATIC
 
-LIBPATHS = -L$(ENET_INSTALL_PATH) $(RAYLIB_LIBS)
-INCLUDES = $(ENET_HEADERS) $(RAYLIB_HEADERS)
-LIBFLAGS = -lenet -lraylib
+LIBPATHS = $(RAYLIB_LIBS)
+INCLUDES = $(RAYLIB_HEADERS)
+LIBFLAGS = -lraylib
 # -- END OF CONFIGURATION --
 
 # -- SCRIPTS --
