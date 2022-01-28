@@ -16,6 +16,7 @@ namespace NoGUI
 {
 	int savePage(std::shared_ptr< Page > pg, std::shared_ptr< NoMEM::MEMManager > assets=nullptr, const std::string& path="./page.json");
 	std::shared_ptr< Page > loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
+	std::shared_ptr< NoGUI::GUIManager > loadManager(std::string path, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 }
 
 namespace NoMEM

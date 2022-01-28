@@ -122,6 +122,34 @@ std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr
 	}
 }
 
+std::shared_ptr< NoGUI::GUIManager > NoGUI::loadManager(std::string path, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	rapidjson::Document d;
+	if ( readFile(path, d) == 0 )
+	{
+		std::shared_ptr< NoGUI::GUIManager > model = std::make_shared< NoGUI::GUIManager >();
+		std::shared_ptr< NoGUI::Page > pg = model->getPage();
+		deserializePage(d, pg, assets);
+		pg->update();
+		for (std::shared_ptr< NoGUI::Element > elem : pg->getElements())
+		{
+			NoGUI::CDropDown dropdown = elem->getComponent< NoGUI::CDropDown >();
+			if ( dropdown.owned )
+			{
+				std::shared_ptr< NoGUI::Page > dropPg = model->addPage(dropdown.options);
+				dropPg->update();
+			}
+		}
+		
+		return model;
+	}
+	else
+	{
+
+		return nullptr;
+	}
+}
+
 // TODO: handle case if asset is already loaded
 // TODO: try to add assets without the added path argument where possible
 void NoPARSE::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON)
