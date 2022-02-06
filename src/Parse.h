@@ -22,7 +22,13 @@ namespace NoGUI
 namespace NoMEM
 {
 	int saveAssets(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& path="./assets.json");
-	std::shared_ptr< NoMEM::MEMManager > loadAssets(const std::string& path="./assets.json", const std::string& assetPath="../assets/");
+	std::shared_ptr< NoMEM::MEMManager > loadAssets(const std::string& filePath="./assets.json");
+	std::shared_ptr< NoMEM::MEMManager > loadAssets(NoMEM::Config& dir);
+	void loadTextures(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath);
+	void loadSprites(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath);
+	void loadFonts(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath);
+	void loadSounds(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath);
+	void loadMusic(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath);
 }
 
 namespace NoPARSE
@@ -39,21 +45,13 @@ namespace NoPARSE
 		{NoGUI::TextAlign::TOP, "TOP"},
 		{NoGUI::TextAlign::BOTTOM, "BOTTOM"},
 		{NoGUI::TextAlign::BOTTOML, "BOTTOM LEFT"},
-		{NoGUI::TextAlign::BOTTOMR, "BOTTOM RIGHT"},
+		{NoGUI::TextAlign::BOTTOMR, "BOTTOM RIGHT"}
 	};
 	const std::map< NoGUI::TextWrap, std::string > WrapMap = {
 		{NoGUI::TextWrap::NONE, "NONE"},
 		{NoGUI::TextWrap::DOWN, "DOWN"},
 		{NoGUI::TextWrap::UP, "UP"},
 		{NoGUI::TextWrap::AROUND, "AROUND"}
-	};
-	class Parser
-	{
-	private:
-		std::unique_ptr< NoMEM::MEMManager > assets;
-	public:
-		Parser(std::unique_ptr< NoMEM::MEMManager > a)
-			: assets(move(a)) {}
 	};
 	
 	void deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON);

@@ -1,11 +1,28 @@
 {
     "Assets": {
-        "Fonts": {
-            "jupiter_crash": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\game_menu\\build/../fonts/jupiter_crash.png"
+        "Config": {
+            "Base": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\game_menu\\build/",
+            "Fonts": "../assets/textures/sprites/",
+            "Textures": "../assets/fonts/",
+            "Sprites": "../assets/textures/",
+            "Sounds": "../assets/audio/sounds/",
+            "Music": "../assets/audio/music/"
         },
-        "Textures": {
-            "joinBack": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\game_menu\\build/../imgs/background.png"
-        },
-        "Sprites": {}
+        "Fonts": {},
+        "Textures": {},
+        "Sprites": {},
+        "Sounds": {},
+        "Music": {},
+        "Custom": {
+            "Fonts": {
+                "jupiter_crash": "../fonts/jupiter_crash.png"
+            },
+            "Textures": {
+                "joinBack": "../imgs/background.png"
+            },
+            "Sprites": {},
+            "Sounds": {},
+            "Music": {}
+        }
     }
 }
