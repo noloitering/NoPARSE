@@ -1,0 +1,46 @@
+{
+    "Assets": {
+        "Config": {
+            "Base": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\assets\\build/../assets/",
+            "Fonts": "fonts/",
+            "Textures": "textures/",
+            "Sprites": "textures/sprites/",
+            "Sounds": "audio/sounds/",
+            "Music": "audio/music/"
+        },
+        "Fonts": {
+            "mecha": "mecha.png",
+            "alagard": "alagard.png",
+            "alpha_beta": "alpha_beta.png",
+            "pixantiqua": "pixantiqua.png",
+            "pixelplay": "pixelplay.png",
+            "setback": "setback.png",
+            "romulus": "romulus.png",
+            "jupiter_crash": "jupiter_crash.png"
+        },
+        "Textures": {
+            "background": "background.png",
+            "background2": "background2.png",
+            "background3": "background3.png"
+        },
+        "Sprites": {
+            "player3": "player3.png"
+        },
+        "Sounds": {
+            "001-Sample01": "001-Sample01.wav",
+            "002-Sample02": "002-Sample02.wav",
+            "003-Sample03": "003-Sample03.wav",
+            "004-Sample04": "004-Sample04.wav"
+        },
+        "Music": {
+            "title01": "title01.wav"
+        },
+        "Custom": {
+            "Fonts": {},
+            "Textures": {},
+            "Sprites": {},
+            "Sounds": {},
+            "Music": {}
+        }
+    }
+}

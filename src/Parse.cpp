@@ -86,12 +86,12 @@ int NoMEM::saveAssets(std::shared_ptr< NoMEM::MEMManager > assets, const std::st
 	return res;
 }
 
-std::shared_ptr< NoMEM::MEMManager > NoMEM::loadAssets(const std::string& path, const std::string& assetPath)
+std::shared_ptr< NoMEM::MEMManager > NoMEM::loadAssets(const std::string& filePath)
 {
 	rapidjson::Document d;
-	if ( readFile(path, d) == 0 )
+	if ( readFile(filePath, d) == 0 )
 	{
-		std::shared_ptr< NoMEM::MEMManager > assets = std::make_shared< NoMEM::MEMManager >(assetPath);
+		std::shared_ptr< NoMEM::MEMManager > assets = std::make_shared< NoMEM::MEMManager >();
 		const rapidjson::Value& assetJSON = d["Assets"].GetObject();
 		deserializeAssets(assets, assetJSON);
 		
@@ -102,6 +102,144 @@ std::shared_ptr< NoMEM::MEMManager > NoMEM::loadAssets(const std::string& path, 
 
 		return nullptr;
 	}
+}
+
+std::shared_ptr< NoMEM::MEMManager > NoMEM::loadAssets(NoMEM::Config& dir)
+{
+	std::shared_ptr< NoMEM::MEMManager > assets = std::make_shared< NoMEM::MEMManager >(dir);
+	std::string texturePath = (dir.cwd() + dir.textureDir);
+	std::string spritePath = (dir.cwd() + dir.spriteDir);
+	std::string fontPath = (dir.cwd() + dir.fontDir);
+	std::string soundPath = (dir.cwd() + dir.soundDir);
+	std::string musicPath = (dir.cwd() + dir.musicDir);
+	
+	NoMEM::loadTextures(assets, texturePath);
+	NoMEM::loadSprites(assets, spritePath);
+	NoMEM::loadFonts(assets, fontPath);
+	NoMEM::loadSounds(assets, soundPath);
+	NoMEM::loadMusic(assets, musicPath);
+	
+	return assets;
+}
+
+void NoMEM::loadTextures(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath)
+{
+	int count = 0;
+	char **textures = GetDirectoryFiles(dirPath.c_str(), &count);
+	for (int i=0; i < count; i++)
+	{
+		int fileChars = strlen(textures[i]);
+		std::string filePath = dirPath + std::string(textures[i]);
+		if ( fileChars > 4 ) // check to see if valid file
+		{
+			if ( textures[i][fileChars - 4] == '.' ) // check for file extension
+			{
+				std::string name(GetFileNameWithoutExt(filePath.c_str()));
+				assets->addTexture(name);
+			}
+		}
+		else
+		{
+			std::cout << "could not recognize: " << GetFileNameWithoutExt(filePath.c_str()) << std::endl;
+		}
+	}
+	ClearDirectoryFiles();
+}
+
+void NoMEM::loadSprites(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath)
+{
+	int count = 0;
+	char **sprites = GetDirectoryFiles(dirPath.c_str(), &count);
+	for (int i=0; i < count; i++)
+	{
+		int fileChars = strlen(sprites[i]);
+		std::string filePath = dirPath + std::string(sprites[i]);
+		if ( fileChars > 4 ) // check to see if valid file
+		{
+			if ( sprites[i][fileChars - 4] == '.' ) // check for file extension
+			{
+				std::string name(GetFileNameWithoutExt(filePath.c_str()));
+				assets->addSprite(name);
+			}
+		}
+		else
+		{
+			std::cout << "could not recognize: " << GetFileNameWithoutExt(filePath.c_str()) << std::endl;
+		}
+	}
+	ClearDirectoryFiles();
+}
+
+void NoMEM::loadFonts(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath)
+{
+	int count = 0;
+	char **fonts = GetDirectoryFiles(dirPath.c_str(), &count);
+	for (int i=0; i < count; i++)
+	{
+		int fileChars = strlen(fonts[i]);
+		std::string filePath = dirPath + std::string(fonts[i]);
+		if ( fileChars > 4 ) // check to see if valid file
+		{
+			if ( fonts[i][fileChars - 4] == '.' ) // check for file extension
+			{
+				std::string name(GetFileNameWithoutExt(filePath.c_str()));
+				assets->addFont(name);
+			}
+		}
+		else
+		{
+			std::cout << "could not recognize: " << GetFileNameWithoutExt(filePath.c_str()) << std::endl;
+		}
+	}
+	ClearDirectoryFiles();
+}
+
+void NoMEM::loadSounds(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath)
+{
+	int count = 0;
+	char **sounds = GetDirectoryFiles(dirPath.c_str(), &count);
+	for (int i=0; i < count; i++)
+	{
+		int fileChars = strlen(sounds[i]);
+		std::string filePath = dirPath + std::string(sounds[i]);
+		if ( fileChars > 4 ) // check to see if valid file
+		{
+			if ( sounds[i][fileChars - 4] == '.' ) // check for file extension
+			{
+				std::string name(GetFileNameWithoutExt(filePath.c_str()));
+				assets->addSound(name);
+			}
+		}
+		else
+		{
+			std::cout << "could not recognize: " << GetFileNameWithoutExt(filePath.c_str()) << std::endl;
+		}
+	}
+	ClearDirectoryFiles();
+}
+
+void NoMEM::loadMusic(std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dirPath)
+{
+	int count = 0;
+	char **music = GetDirectoryFiles(dirPath.c_str(), &count);
+	for (int i=0; i < count; i++)
+	{
+		int fileChars = strlen(music[i]);
+		std::string filePath = dirPath + std::string(music[i]);
+		if ( fileChars > 4 ) // check to see if valid file
+		{
+			if ( music[i][fileChars - 4] == '.' ) // check for file extension
+			{
+				std::string name(GetFileNameWithoutExt(filePath.c_str()));
+				assets->addMusic(name);
+			}
+		}
+		else
+		{
+			std::cout << "could not recognize: " << GetFileNameWithoutExt(filePath.c_str()) << std::endl;
+		}
+	}
+	ClearDirectoryFiles();
 }
 
 std::shared_ptr< NoGUI::Page > NoGUI::loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets)
@@ -154,23 +292,86 @@ std::shared_ptr< NoGUI::GUIManager > NoGUI::loadManager(std::string path, std::s
 // TODO: try to add assets without the added path argument where possible
 void NoPARSE::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON)
 {
+	rapidjson::Value::ConstMemberIterator configIt = assetJSON.FindMember("Config");
+	rapidjson::Value::ConstMemberIterator customIt = assetJSON.FindMember("Custom");
 	const rapidjson::Value& fonts = assetJSON["Fonts"];
 	const rapidjson::Value& textures = assetJSON["Textures"];
 	const rapidjson::Value& sprites = assetJSON["Sprites"];
+	const rapidjson::Value& sounds = assetJSON["Sounds"];
+	const rapidjson::Value& music = assetJSON["Music"];
+	
+	
+	if ( configIt != assetJSON.MemberEnd() )
+	{
+		assets->clear();
+		const rapidjson::Value& config = configIt->value.GetObject();
+		std::string basePath = config["Base"].GetString();
+		std::string fontPath = config["Fonts"].GetString();
+		std::string texturePath = config["Textures"].GetString();
+		std::string spritePath = config["Sprites"].GetString();
+		std::string soundPath = config["Sounds"].GetString();
+		std::string musicPath = config["Music"].GetString();
+		assets->conf = NoMEM::Config(basePath, texturePath, spritePath, fontPath, soundPath, musicPath);
+	}
 		
 	for (auto& font : fonts.GetObject())
 	{
-		assets->addFont(font.name.GetString(), font.value.GetString());
+		assets->addFont(font.name.GetString());
 	}
 		
 	for (auto& texture : textures.GetObject())
 	{
-		assets->addTexture(texture.name.GetString(), texture.value.GetString());
+		assets->addTexture(texture.name.GetString());
 	}
 		
 	for (auto& sprite : sprites.GetObject())
 	{
-		assets->addSprite(sprite.name.GetString(), sprite.value.GetString());
+		assets->addSprite(sprite.name.GetString());
+	}
+	
+	for (auto& sound : sounds.GetObject())
+	{
+		assets->addSound(sound.name.GetString());
+	}
+	
+	for (auto& song : music.GetObject())
+	{
+		assets->addMusic(song.name.GetString());
+	}
+	
+	if ( customIt != assetJSON.MemberEnd() )
+	{
+		const rapidjson::Value& customPaths = customIt->value.GetObject();
+		const rapidjson::Value& customFonts = customPaths["Fonts"];
+		const rapidjson::Value& customTextures = customPaths["Textures"];
+		const rapidjson::Value& customSprites = customPaths["Sprites"];
+		const rapidjson::Value& customSounds = customPaths["Sounds"];
+		const rapidjson::Value& customMusic = customPaths["Music"];
+		
+		for (auto& font : customFonts.GetObject())
+		{
+			assets->addFont(font.name.GetString(), font.value.GetString());
+		}
+		
+		for (auto& texture : customTextures.GetObject())
+		{
+			assets->addTexture(texture.name.GetString(), texture.value.GetString());
+		}
+		
+		for (auto& sprite : customSprites.GetObject())
+		{
+			assets->addSprite(sprite.name.GetString(), sprite.value.GetString());
+		}
+	
+		for (auto& sound : customSounds.GetObject())
+		{
+			assets->addSound(sound.name.GetString(), sound.value.GetString());
+		}
+	
+		for (auto& song : customMusic.GetObject())
+		{
+			assets->addMusic(song.name.GetString(), song.value.GetString());
+		}
 	}
 }
 
@@ -741,48 +942,78 @@ void NoPARSE::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 {
 	std::unordered_map< std::string, std::string > customPaths = assets->conf.get();
 	std::string basePath = assets->conf.cwd();
+	if ( basePath.back() != '/' )
+	{
+		basePath += "/";
+	}
 	std::string fontPath = assets->conf.fontDir;
 	std::string texturePath = assets->conf.textureDir;
 	std::string spritePath = assets->conf.spriteDir;
+	std::string soundPath = assets->conf.soundDir;
+	std::string musicPath = assets->conf.musicDir;
+	std::unordered_map< std::string, std::string > customFonts;
+	std::unordered_map< std::string, std::string > customTextures;
+	std::unordered_map< std::string, std::string > customSprites;
+	std::unordered_map< std::string, std::string > customSounds;
+	std::unordered_map< std::string, std::string > customMusic;
 	writer.Key("Assets");
 	writer.StartObject();
+		writer.Key("Config");
+		writer.StartObject();
+			writer.Key("Base");
+			writer.String(basePath.c_str());
+			writer.Key("Fonts");
+			writer.String(fontPath.c_str());
+			writer.Key("Textures");
+			writer.String(texturePath.c_str());
+			writer.Key("Sprites");
+			writer.String(spritePath.c_str());
+			writer.Key("Sounds");
+			writer.String(soundPath.c_str());
+			writer.Key("Music");
+			writer.String(musicPath.c_str());
+		writer.EndObject();
 		writer.Key("Fonts");
 		writer.StartObject();
 			for (auto font : assets->getAll< Font >())
 			{
-				writer.Key(font.first.c_str());
-				std::string out = (fontPath.front() == '.') ? basePath + "/" + fontPath + font.first : fontPath + font.first; // get full path
-				if ( FileExists(out.c_str()) )
+//				std::string filePath = (fontPath.front() == '.') ? basePath + "/" + fontPath + font.first : fontPath + font.first; // get full path
+				std::string filePath = basePath + "/" + fontPath + font.first;
+				std::string out = font.first; // relative path
+				if ( FileExists(filePath.c_str()) )
 				{
 				
 				}
-				else if ( FileExists(((out + ".ttf").c_str())) )
+				else if ( FileExists(((filePath + ".ttf").c_str())) )
 				{
 					out += ".ttf";
 				}
-				else if ( FileExists(((out + ".fnt").c_str())) )
+				else if ( FileExists(((filePath	+ ".fnt").c_str())) )
 				{
 					out += ".fnt";
 				}
-				else if ( FileExists(((out + ".png").c_str())) )
+				else if ( FileExists(((filePath + ".png").c_str())) )
 				{
 					out += ".png";
 				}
 				else
-				{
+				{					
 					auto found = customPaths.find(font.first);
 					if ( found != customPaths.end() )
 					{
-						out = (found->second.front() == '.') ? basePath + "/" + found->second : found->second; // get full path
+						customFonts[font.first] = found->second;
 						customPaths.erase(found);
+						
+						continue;
 					}
 					else
 					{
 						std::cerr << "could not find path for " << font.first << std::endl;
 						
-//						return 1;
+						continue;
 					}
 				}
+				writer.Key(font.first.c_str());
 				writer.String(out.c_str());
 			}
 		writer.EndObject();
@@ -791,43 +1022,47 @@ void NoPARSE::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 		writer.StartObject();
 			for (auto texture : assets->getAll< Texture2D >())
 			{
-				writer.Key(texture.first.c_str());
-				std::string out = (texturePath.front() == '.') ? basePath + "/" + texturePath + texture.first : texturePath + texture.first; // get full path
-				if ( FileExists(out.c_str()) )
+//				std::string filePath = (texturePath.front() == '.') ? basePath + "/" + texturePath + texture.first : texturePath + texture.first; // get full path
+				std::string filePath = basePath + "/" + texturePath + texture.first;
+				std::string out = texture.first; // relative path
+				if ( FileExists(filePath.c_str()) )
 				{
 			
 				}
-				else if ( FileExists(((out + ".png").c_str())) )
+				else if ( FileExists(((filePath + ".png").c_str())) )
 				{
 					out += ".png";
 				}
-				else if ( FileExists(((out + ".gif").c_str())) )
+				else if ( FileExists(((filePath + ".gif").c_str())) )
 				{
 					out += ".gif";
 				}
-				else if ( FileExists(((out + ".hdr").c_str())) )
+				else if ( FileExists(((filePath + ".hdr").c_str())) )
 				{
 					out += ".hdr";
 				}
-				else if ( FileExists(((out + ".dds").c_str())) )
+				else if ( FileExists(((filePath + ".dds").c_str())) )
 				{
 					out += ".dds";
 				}
 				else
-				{
+				{					
 					auto found = customPaths.find(texture.first);
 					if ( found != customPaths.end() )
 					{
-						out = (found->second.front() == '.') ? basePath + "/" + found->second : found->second; // get full path
+						customTextures[texture.first] = found->second;
 						customPaths.erase(found);
+						
+						continue;
 					}
 					else
 					{
 						std::cerr << "could not find path for " << texture.first << std::endl;
 						
-//						return 1;
+						continue;
 					}
 				}
+				writer.Key(texture.first.c_str());
 				writer.String(out.c_str());
 			}
 		writer.EndObject();
@@ -836,25 +1071,26 @@ void NoPARSE::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 		writer.StartObject();
 			for (auto sprite : assets->getAll< NoMEM::Sprite >())
 			{
-				writer.Key(sprite.first.c_str());
-				std::string out = (spritePath.front() == '.') ? basePath + "/" + spritePath + sprite.first : spritePath + sprite.first; // get full path
-				if ( FileExists(out.c_str()) )
+//				std::string filePath = (spritePath.front() == '.') ? basePath + "/" + spritePath + sprite.first : spritePath + sprite.first; // get full path
+				std::string filePath = basePath + "/" + spritePath + sprite.first;
+				std::string out = sprite.first;
+				if ( FileExists(filePath.c_str()) )
 				{
 			
 				}
-				else if ( FileExists(((out + ".png").c_str())) )
+				else if ( FileExists(((filePath + ".png").c_str())) )
 				{
 					out += ".png";
 				}
-				else if ( FileExists(((out + ".gif").c_str())) )
+				else if ( FileExists(((filePath + ".gif").c_str())) )
 				{
 					out += ".gif";
 				}
-				else if ( FileExists(((out + ".hdr").c_str())) )
+				else if ( FileExists(((filePath + ".hdr").c_str())) )
 				{
 					out += ".hdr";
 				}
-				else if ( FileExists(((out + ".dds").c_str())) )
+				else if ( FileExists(((filePath + ".dds").c_str())) )
 				{
 					out += ".dds";
 				}
@@ -863,19 +1099,163 @@ void NoPARSE::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 					auto found = customPaths.find(sprite.first);
 					if ( found != customPaths.end() )
 					{
-						out = (found->second.front() == '.') ? basePath + "/" + found->second : found->second; // get full path
+						customSprites[sprite.first] = found->second;
 						customPaths.erase(found);
+						
+						continue;
 					}
 					else
 					{
 						std::cerr << "could not find path for " << sprite.first << std::endl;
 						
-//						return 1;
+						continue;
 					}
 				}
+				writer.Key(sprite.first.c_str());
 				writer.String(out.c_str());
 			}
 		writer.EndObject();
+		
+		writer.Key("Sounds");
+		writer.StartObject();
+			for (auto sound : assets->getAll< Sound >())
+			{
+//				std::string filePath = (soundPath.front() == '.') ? basePath + "/" + soundPath + sound.first : soundPath + sound.first; // get full path
+				std::string filePath = basePath + "/" + soundPath + sound.first;
+				std::string out = sound.first; // relative path
+				// TODO: figure out what files to support
+				if ( FileExists(filePath.c_str()) )
+				{
+				
+				}
+				else if ( FileExists(((filePath + ".wav").c_str())) )
+				{
+					out += ".wav";
+				}
+				else if ( FileExists(((filePath + ".mp3").c_str())) )
+				{
+					out += ".mp3";
+				}
+				else if ( FileExists(((filePath + ".ogg").c_str())) )
+				{
+					out += ".ogg";
+				}
+				else
+				{
+					auto found = customPaths.find(sound.first);
+					if ( found != customPaths.end() )
+					{
+						customSounds[sound.first] = found->second;
+						customPaths.erase(found);
+						
+						continue;
+					}
+					else
+					{
+						std::cerr << "could not find path for " << sound.first << std::endl;
+						
+						continue;
+					}
+				}
+				writer.Key(sound.first.c_str());
+				writer.String(out.c_str());
+			}
+		writer.EndObject();
+		
+		writer.Key("Music");
+		writer.StartObject();
+			for (auto music : assets->getAll< Music >())
+			{
+//				std::string filePath = (musicPath.front() == '.') ? basePath + "/" + musicPath + music.first : musicPath + music.first; // get full path
+				std::string filePath = basePath + "/" + musicPath + music.first;
+				std::string out = music.first; // relative path
+				// TODO: figure out what files to support
+				if ( FileExists(filePath.c_str()) )
+				{
+				
+				}
+				else if ( FileExists(((filePath + ".wav").c_str())) )
+				{
+					out += ".wav";
+				}
+				else if ( FileExists(((filePath + ".mp3").c_str())) )
+				{
+					out += ".mp3";
+				}
+				else if ( FileExists(((filePath + ".ogg").c_str())) )
+				{
+					out += ".ogg";
+				}
+				else
+				{
+					auto found = customPaths.find(music.first);
+					if ( found != customPaths.end() )
+					{
+						customSounds[music.first] = found->second;
+						customPaths.erase(found);
+						
+						continue;
+					}
+					else
+					{
+						std::cerr << "could not find path for " << music.first << std::endl;
+						
+						continue;
+					}
+				}
+				writer.Key(music.first.c_str());
+				writer.String(out.c_str());
+			}
+		writer.EndObject();
+		
+		writer.Key("Custom");
+		writer.StartObject();
+			writer.Key("Fonts");
+			writer.StartObject();
+				for (auto customFont : customFonts)
+				{
+					writer.Key(customFont.first.c_str());
+					writer.String(customFont.second.c_str());
+				}
+			writer.EndObject();
+			
+			writer.Key("Textures");
+			writer.StartObject();
+				for (auto customTexture : customTextures)
+				{
+					writer.Key(customTexture.first.c_str());
+					writer.String(customTexture.second.c_str());
+				}
+			writer.EndObject();
+		
+			writer.Key("Sprites");
+			writer.StartObject();
+				for (auto customSprite : customSprites)
+				{
+					writer.Key(customSprite.first.c_str());
+					writer.String(customSprite.second.c_str());
+				}
+			writer.EndObject();
+			
+			writer.Key("Sounds");
+			writer.StartObject();
+				for (auto customSound : customSounds)
+				{
+					writer.Key(customSound.first.c_str());
+					writer.String(customSound.second.c_str());
+				}
+			writer.EndObject();
+			
+			writer.Key("Music");
+			writer.StartObject();
+				for (auto customSong : customMusic)
+				{
+					writer.Key(customSong.first.c_str());
+					writer.String(customSong.second.c_str());
+				}
+			writer.EndObject();	
+		writer.EndObject();
+		
 	writer.EndObject();
 }
 
