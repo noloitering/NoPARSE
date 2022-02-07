@@ -290,7 +290,7 @@ std::shared_ptr< NoGUI::GUIManager > NoGUI::loadManager(std::string path, std::s
 
 // TODO: handle case if asset is already loaded
 // TODO: try to add assets without the added path argument where possible
-void NoPARSE::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON)
+void NoMEM::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON)
 {
 	rapidjson::Value::ConstMemberIterator configIt = assetJSON.FindMember("Config");
 	rapidjson::Value::ConstMemberIterator customIt = assetJSON.FindMember("Custom");
@@ -375,7 +375,7 @@ void NoPARSE::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, con
 	}
 }
 
-void NoPARSE::deserializePage(rapidjson::Document& d, std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoGUI::deserializePage(rapidjson::Document& d, std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	rapidjson::Value::ConstMemberIterator assetIt = d.FindMember("Assets");
 	const rapidjson::Value& pgComps = d["Components"];
@@ -481,7 +481,7 @@ void NoPARSE::deserializePage(rapidjson::Document& d, std::shared_ptr< NoGUI::Pa
 	}
 }
 
-void NoPARSE::deserializeCText(NoGUI::CText& text, const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoGUI::deserializeCText(NoGUI::CText& text, const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	Color col;
 	std::string val(textJSON["Align"].GetString());
@@ -609,7 +609,7 @@ void NoPARSE::deserializeCText(NoGUI::CText& text, const rapidjson::Value& textJ
 	}
 }
 
-void NoPARSE::deserializeCImage(NoGUI::CImage& img, const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoGUI::deserializeCImage(NoGUI::CImage& img, const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	Color col;
 	std::string textureKey(imgJSON["File"].GetString());
@@ -706,7 +706,7 @@ void NoPARSE::deserializeCImage(NoGUI::CImage& img, const rapidjson::Value& imgJ
 	}
 }
 
-void NoPARSE::deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& inputJSON)
+void NoGUI::deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& inputJSON)
 {
 	rapidjson::Value::ConstMemberIterator i = inputJSON.FindMember("Index");
 	input.cap = inputJSON["Max"].GetInt();
@@ -716,7 +716,7 @@ void NoPARSE::deserializeCInput(NoGUI::CInput& input, const rapidjson::Value& in
 	}
 }
 
-void NoPARSE::deserializeCMultiStyle(NoGUI::CMultiStyle& styles, const rapidjson::Value& stylesJSON)
+void NoGUI::deserializeCMultiStyle(NoGUI::CMultiStyle& styles, const rapidjson::Value& stylesJSON)
 {
 	for (auto& style : stylesJSON["Styles"].GetArray())
 	{
@@ -724,7 +724,7 @@ void NoPARSE::deserializeCMultiStyle(NoGUI::CMultiStyle& styles, const rapidjson
 	}
 }
 
-void NoPARSE::deserializeStyle(NoGUI::Style& style, const rapidjson::Value& elemJSON)
+void NoGUI::deserializeStyle(NoGUI::Style& style, const rapidjson::Value& elemJSON)
 {
 	Color col;
 	Color outCol;
@@ -754,7 +754,7 @@ void NoPARSE::deserializeStyle(NoGUI::Style& style, const rapidjson::Value& elem
 	}
 }
 
-void NoPARSE::deserializeComponents(NoGUI::Components& components, const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets, std::shared_ptr< NoGUI::Element > dropParent)
+void NoGUI::deserializeComponents(NoGUI::Components& components, const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets, std::shared_ptr< NoGUI::Element > dropParent)
 {
 	NoGUI::CText& textComp = std::get< NoGUI::CText >(components);
 	NoGUI::CImage& imageComp = std::get< NoGUI::CImage >(components);
@@ -766,28 +766,28 @@ void NoPARSE::deserializeComponents(NoGUI::Components& components, const rapidjs
 		std::string key(component.name.GetString());
 		if ( key == "Text" )
 		{
-			textComp = NoPARSE::loadCText(component.value, assets);
+			textComp = NoGUI::loadCText(component.value, assets);
 		}
 		else if ( key == "Image" )
 		{
-			imageComp = NoPARSE::loadCImage(component.value, assets);
+			imageComp = NoGUI::loadCImage(component.value, assets);
 		}
 		else if ( key == "Input" )
 		{
-			inputComp = NoPARSE::loadCInput(component.value);
+			inputComp = NoGUI::loadCInput(component.value);
 		}
 		else if ( key == "MultiStyle" )
 		{
-			stylesComp = NoPARSE::loadCMultiStyle(component.value);
+			stylesComp = NoGUI::loadCMultiStyle(component.value);
 		}
 		else if ( key == "DropDown" )
 		{
-			optionsComp = NoPARSE::loadCDropDown(component.value, dropParent, assets);
+			optionsComp = NoGUI::loadCDropDown(component.value, dropParent, assets);
 		}
 	}
 }
 
-NoGUI::CText NoPARSE::loadCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+NoGUI::CText NoGUI::loadCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::CText text;
 	deserializeCText(text, textJSON, assets);
@@ -796,7 +796,7 @@ NoGUI::CText NoPARSE::loadCText(const rapidjson::Value& textJSON, std::shared_pt
 	return text;
 }
 
-NoGUI::CImage NoPARSE::loadCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+NoGUI::CImage NoGUI::loadCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::CImage img;
 	deserializeCImage(img, imgJSON, assets);
@@ -805,7 +805,7 @@ NoGUI::CImage NoPARSE::loadCImage(const rapidjson::Value& imgJSON, std::shared_p
 	return img;
 }
 
-NoGUI::CInput NoPARSE::loadCInput(const rapidjson::Value& inputJSON)
+NoGUI::CInput NoGUI::loadCInput(const rapidjson::Value& inputJSON)
 {
 	NoGUI::CInput input;
 	deserializeCInput(input, inputJSON);
@@ -814,7 +814,7 @@ NoGUI::CInput NoPARSE::loadCInput(const rapidjson::Value& inputJSON)
 	return input;
 }
 
-NoGUI::CMultiStyle NoPARSE::loadCMultiStyle(const rapidjson::Value& stylesJSON)
+NoGUI::CMultiStyle NoGUI::loadCMultiStyle(const rapidjson::Value& stylesJSON)
 {
 	NoGUI::CMultiStyle styles;
 	deserializeCMultiStyle(styles, stylesJSON);
@@ -823,7 +823,7 @@ NoGUI::CMultiStyle NoPARSE::loadCMultiStyle(const rapidjson::Value& stylesJSON)
 	return styles;
 }
 
-NoGUI::CDropDown NoPARSE::loadCDropDown(const rapidjson::Value& dropJSON, std::shared_ptr< NoGUI::Element > parent, std::shared_ptr< NoMEM::MEMManager > assets)
+NoGUI::CDropDown NoGUI::loadCDropDown(const rapidjson::Value& dropJSON, std::shared_ptr< NoGUI::Element > parent, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::CDropDown dropdown;
 	rapidjson::Document d;
@@ -855,7 +855,7 @@ NoGUI::CDropDown NoPARSE::loadCDropDown(const rapidjson::Value& dropJSON, std::s
 	return dropdown;
 }
 
-NoGUI::Components NoPARSE::loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets, std::shared_ptr< NoGUI::Element > dropParent)
+NoGUI::Components NoGUI::loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets, std::shared_ptr< NoGUI::Element > dropParent)
 {
 	NoGUI::Components components;
 	deserializeComponents(components, compJSON, assets, dropParent);
@@ -869,7 +869,7 @@ std::shared_ptr< NoGUI::Element > loadElement(const rapidjson::Value::ConstMembe
 	const rapidjson::Value& hoverArray = data["Hover Colour"].GetArray();
 	const rapidjson::Value& elemComps = data["Components"];
 	std::string elemType(elemJSON->name.GetString());
-	NoGUI::Style elemStyle = loadStyle(data);
+	NoGUI::Style elemStyle = NoGUI::loadStyle(data);
 	std::string elemInner(data["Inner"].GetString());
 	std::string elemId(data["ID"].GetString());
 	std::shared_ptr< NoGUI::Element > newElem;
@@ -924,13 +924,13 @@ std::shared_ptr< NoGUI::Element > loadElement(const rapidjson::Value::ConstMembe
 //	newElem->setHoverCol(hovCol);
 	if ( assets )
 	{
-		newElem->setComponents(loadComponents(elemComps, assets));
+		newElem->setComponents(NoGUI::loadComponents(elemComps, assets));
 	}
 	
 	return newElem;
 }
 
-NoGUI::Style NoPARSE::loadStyle(const rapidjson::Value& elemJSON)
+NoGUI::Style NoGUI::loadStyle(const rapidjson::Value& elemJSON)
 {
 	NoGUI::Style style;
 	deserializeStyle(style, elemJSON);
@@ -938,7 +938,7 @@ NoGUI::Style NoPARSE::loadStyle(const rapidjson::Value& elemJSON)
 	return style;
 }
 
-void NoPARSE::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoMEM::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	std::unordered_map< std::string, std::string > customPaths = assets->conf.get();
 	std::string basePath = assets->conf.cwd();
@@ -1259,7 +1259,7 @@ void NoPARSE::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 	writer.EndObject();
 }
 
-void NoPARSE::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, NoGUI::Components components, std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dropPath)
+void NoGUI::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, NoGUI::Components components, std::shared_ptr< NoMEM::MEMManager > assets, const std::string& dropPath)
 {
 	NoGUI::CText pgText = std::get< NoGUI::CText >(components);
 	NoGUI::CInput pgInput = std::get< NoGUI::CInput >(components);
@@ -1297,7 +1297,7 @@ void NoPARSE::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuff
 	writer.EndObject();
 }
 
-void NoPARSE::serializeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoGUI::Element > elem, const std::string& id, std::shared_ptr< NoMEM::MEMManager > assets, std::string dropPath)
+void NoGUI::serializeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoGUI::Element > elem, const std::string& id, std::shared_ptr< NoMEM::MEMManager > assets, std::string dropPath)
 {
 	writer.StartObject();
 		if ( dynamic_cast< NoGUI::CheckBox* >(elem.get()) )
@@ -1362,7 +1362,7 @@ void NoPARSE::serializeElement(rapidjson::PrettyWriter< rapidjson::StringBuffer 
 	writer.EndObject();
 }
 
-void NoPARSE::serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
+void NoGUI::serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::Style& style)
 {
 	writer.Key("Num Sides");
 	writer.Uint(style.sides);
@@ -1393,7 +1393,7 @@ void NoPARSE::serializeStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >&
 	writer.EndArray();
 }
 
-void NoPARSE::serializeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
+void NoGUI::serializeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CMultiStyle& styles)
 {
 	writer.StartObject();
 		writer.Key("Styles");
@@ -1408,7 +1408,7 @@ void NoPARSE::serializeCMultiStyle(rapidjson::PrettyWriter< rapidjson::StringBuf
 	writer.EndObject();
 }
 
-void NoPARSE::serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoGUI::serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CImage& imageFmt, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	writer.StartObject();
 		writer.Key("File");
@@ -1451,7 +1451,7 @@ void NoPARSE::serializeCImage(rapidjson::PrettyWriter< rapidjson::StringBuffer >
 	writer.EndObject();
 }
 
-void NoPARSE::serializeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets)
+void NoGUI::serializeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CText& textFmt, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	writer.StartObject();
 		writer.Key("Font");
@@ -1510,7 +1510,7 @@ void NoPARSE::serializeCText(rapidjson::PrettyWriter< rapidjson::StringBuffer >&
 	writer.EndObject();
 }
 
-void NoPARSE::serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt, std::shared_ptr< NoMEM::MEMManager > assets, std::string path)
+void NoGUI::serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CDropDown& dropFmt, std::shared_ptr< NoMEM::MEMManager > assets, std::string path)
 {
 	if ( path.empty() )
 	{
@@ -1536,7 +1536,7 @@ void NoPARSE::serializeCDropDown(rapidjson::PrettyWriter< rapidjson::StringBuffe
 	}
 }
 
-void NoPARSE::serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
+void NoGUI::serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoGUI::CInput& inputFmt)
 {
 	writer.StartObject();
 		writer.Key("Max");
