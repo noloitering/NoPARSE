@@ -1,10 +1,27 @@
 {
     "Assets": {
-        "Fonts": {},
-        "Textures": {
-            "ImageText": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/../imgs/ImageText.png"
+        "Config": {
+            "Base": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/",
+            "Fonts": "../assets/fonts/",
+            "Textures": "../assets/textures/",
+            "Sprites": "../assets/textures/sprites/",
+            "Sounds": "../assets/audio/sounds/",
+            "Music": "../assets/audio/music/"
         },
-        "Sprites": {}
+        "Fonts": {},
+        "Textures": {},
+        "Sprites": {},
+        "Sounds": {},
+        "Music": {},
+        "Custom": {
+            "Fonts": {},
+            "Textures": {
+                "ImageText": "../imgs/ImageText.png"
+            },
+            "Sprites": {},
+            "Sounds": {},
+            "Music": {}
+        }
     },
     "Components": {},
     "Elements": {

@@ -5,6 +5,7 @@
 
 #include "../NoGUI/src/GUI.h"
 #include "../NoMEM/src/NoMEM.h"
+#include "../NoECS/src/Entity.h"
 #include "../include/rapidjson/document.h"
 #include "../include/rapidjson/filereadstream.h"
 #include "../include/rapidjson/prettywriter.h"
@@ -60,14 +61,36 @@ namespace NoGUI
 	NoGUI::CMultiStyle loadCMultiStyle(const rapidjson::Value& stylesJSON);
 	NoGUI::CDropDown loadCDropDown(const rapidjson::Value& dropJSON, std::shared_ptr< NoGUI::Element > parent, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 	NoGUI::Style loadStyle(const rapidjson::Value& elemJSON);
-	int savePage(std::shared_ptr< Page > pg, std::shared_ptr< NoMEM::MEMManager > assets=nullptr, const std::string& path="./page.json");
 	std::shared_ptr< Page > loadPage(std::string path, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
 	std::shared_ptr< NoGUI::GUIManager > loadManager(std::string path, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
+	
+	int savePage(std::shared_ptr< Page > pg, std::shared_ptr< NoMEM::MEMManager > assets=nullptr, const std::string& path="./page.json");
 }
 
 namespace NoECS
 {
+	void serializeCTransform(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CTransform& transform);
+	void serializeCBBox(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CBBox& bbox);
+	void serializeCSprite(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CSprite& sprite, std::shared_ptr< NoMEM::MEMManager > assets);
+	void serializeCPoly(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CPoly& polygon);
+	void serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, NoECS::Components components, std::shared_ptr< NoMEM::MEMManager > assets);
+	void serializeEntity(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoECS::Entity > entity, std::shared_ptr< NoMEM::MEMManager > assets);
 	
+	void deserializeCTransform(NoECS::CTransform& transform, const rapidjson::Value& transformJSON);
+	void deserializeCBBox(NoECS::CBBox& bbox, const rapidjson::Value& bboxJSON);
+	void deserializeCSprite(NoECS::CSprite& sprite, const rapidjson::Value& spriteJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	void deserializeCPoly(NoECS::CPoly& polygon, const rapidjson::Value& polyJSON);
+	void deserializeManager(rapidjson::Value& managerJSON, std::shared_ptr< NoECS::EntityManager > manager, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
+	void deserializeComponents(NoECS::Components& components, const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+
+	NoECS::CTransform loadCTransform(const rapidjson::Value& transformJSON);
+	NoECS::CBBox loadCBBox(const rapidjson::Value& bboxJSON);
+	NoECS::CSprite loadCSprite(const rapidjson::Value& spriteJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	NoECS::CPoly loadCPoly(const rapidjson::Value& polyJSON);
+	NoECS::Components loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets);
+	std::shared_ptr< NoECS::EntityManager > loadManager(std::string path, std::shared_ptr< NoMEM::MEMManager > assets=nullptr);
+	
+	int saveManager(std::shared_ptr< NoECS::EntityManager > manager, std::shared_ptr< NoMEM::MEMManager > assets=nullptr, const std::string& path="./page.json");
 }
 
 namespace NoMEM

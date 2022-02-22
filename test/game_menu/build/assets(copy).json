@@ -2,9 +2,9 @@
     "Assets": {
         "Config": {
             "Base": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\game_menu\\build/",
-            "Fonts": "../assets/textures/sprites/",
-            "Textures": "../assets/fonts/",
-            "Sprites": "../assets/textures/",
+            "Fonts": "../assets/fonts/",
+            "Textures": "../assets/textures/",
+            "Sprites": "../assets/textures/sprites/",
             "Sounds": "../assets/audio/sounds/",
             "Music": "../assets/audio/music/"
         },

@@ -2,6 +2,40 @@
 
 using namespace NoPARSE;
 
+int NoECS::saveManager(std::shared_ptr< NoECS::EntityManager > manager, std::shared_ptr< NoMEM::MEMManager > assets, const std::string& path)
+{
+	rapidjson::StringBuffer sb;
+	rapidjson::PrettyWriter< rapidjson::StringBuffer > writer(sb);
+	writer.StartObject();
+		if ( assets )
+		{
+			serializeAssets(writer, assets);
+		}
+		writer.Key("Total");
+		writer.Uint(manager->getTotal());
+		writer.Key("Entities");
+		writer.StartObject();
+			std::unordered_map< std::string, NoECS::EntityVec >& entityClasses = manager->getEntityMap();
+			for (auto entry : entityClasses)
+			{
+				writer.Key(entry.first.c_str());
+				writer.StartArray();
+					for (auto entity : entry.second)
+					{
+//						writer.StartObject();
+							serializeEntity(writer, entity, assets);
+//						writer.EndObject();
+					}
+				writer.EndArray();
+			}
+		writer.EndObject();
+	writer.EndObject();
+	
+	int res = writeFile(sb, path);
+	
+	return res;
+}
+
 int NoGUI::savePage(std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::MEMManager > assets, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
@@ -288,6 +322,24 @@ std::shared_ptr< NoGUI::GUIManager > NoGUI::loadManager(std::string path, std::s
 	}
 }
 
+std::shared_ptr< NoECS::EntityManager > NoECS::loadManager(std::string path, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	rapidjson::Document d;
+	if ( readFile(path, d) == 0 )
+	{
+		std::shared_ptr< NoECS::EntityManager > model = std::make_shared< NoECS::EntityManager >();
+		deserializeManager(d, model, assets);
+		model->update();
+		
+		return model;
+	}
+	else
+	{
+
+		return nullptr;
+	}
+}
+
 // TODO: handle case if asset is already loaded
 // TODO: try to add assets without the added path argument where possible
 void NoMEM::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const rapidjson::Value& assetJSON)
@@ -375,6 +427,7 @@ void NoMEM::deserializeAssets(std::shared_ptr< NoMEM::MEMManager > assets, const
 	}
 }
 
+// TODO: move code to a deserializeElement function
 void NoGUI::deserializePage(rapidjson::Document& d, std::shared_ptr< NoGUI::Page > pg, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	rapidjson::Value::ConstMemberIterator assetIt = d.FindMember("Assets");
@@ -475,10 +528,41 @@ void NoGUI::deserializePage(rapidjson::Document& d, std::shared_ptr< NoGUI::Page
 						newElem->addComponent< NoGUI::CDropDown >(loadCDropDown(elemComp.value.GetObject(), newElem, assets));
 					}
 				}
-//				newElem->setComponents(loadComponents(elemComps, assets, newElem)); // this overwrites any components the Page added.
+				newElem->setComponents(loadComponents(elemComps, assets, newElem)); // this overwrites any components the Page added.
 			}
 		}
 	}
+}
+
+void NoECS::deserializeManager(rapidjson::Value& managerJSON, std::shared_ptr< NoECS::EntityManager > manager, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	rapidjson::Value::ConstMemberIterator assetIt = managerJSON.FindMember("Assets");
+	const rapidjson::Value& entityJSON = managerJSON["Entities"];
+	if ( assetIt != managerJSON.MemberEnd() )
+	{
+		if ( assets == nullptr )
+		{
+			assets = std::make_shared< NoMEM::MEMManager >("../assets/");
+		}
+		deserializeAssets(assets, assetIt->value.GetObject());
+	}
+	NoECS::EntityVec entities(managerJSON["Total"].GetInt());
+	for (auto& classGroup : entityJSON.GetObject())
+	{
+		for (auto& elemData : classGroup.value.GetArray())
+		{
+			for (auto& elem : elemData.GetObject()) // should only be one iteration. We just don't know what the key is going to be
+			{
+				const rapidjson::Value& data = elem.value.GetObject();
+				//const rapidjson::Value& elemComps = data["Components"];
+				size_t elemID = atoi(elem.name.GetString());
+				std::shared_ptr< NoECS::Entity >& entity = entities.at(elemID);
+				entity = std::make_shared< NoECS::Entity >(elemID, classGroup.name.GetString());
+				entity->setComponents(loadComponents(data, assets));
+			}
+		}
+	}
+	manager->setEntities(entities);
 }
 
 void NoGUI::deserializeCText(NoGUI::CText& text, const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
@@ -787,10 +871,172 @@ void NoGUI::deserializeComponents(NoGUI::Components& components, const rapidjson
 	}
 }
 
+void NoECS::deserializeCTransform(NoECS::CTransform& transform, const rapidjson::Value& transformJSON)
+{
+	const rapidjson::Value& posArray = transformJSON["Pos"].GetArray();
+	const rapidjson::Value& sizeArray = transformJSON["Scale"].GetArray();
+	Vector2 pos = {posArray[0].GetInt(), posArray[1].GetInt()};
+	Vector2 scale = {sizeArray[0].GetInt(), sizeArray[1].GetInt()};
+	transform.pos = pos;
+	transform.scale = scale;
+	transform.angle = posArray[2].GetDouble();
+}
+
+void NoECS::deserializeCBBox(NoECS::CBBox& bbox, const rapidjson::Value& bboxJSON)
+{
+	const rapidjson::Value& bboxArray = bboxJSON["Bounds"].GetArray();
+	Vector2 bounds = {bboxArray[0].GetInt(), bboxArray[1].GetInt()};
+	bbox.bounds = bounds;
+	bbox.radi = (Vector2){bounds.x / 2, bounds.y / 2};
+}
+
+// TODO: fix up current frame logic
+void NoECS::deserializeCSprite(NoECS::CSprite& sprite, const rapidjson::Value& spriteJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	Color col;
+	std::string textureKey(spriteJSON["File"].GetString());
+	int numFrames = spriteJSON["Num Frames"].GetInt();
+	rapidjson::Value::ConstMemberIterator colArray = spriteJSON.FindMember("Colour");
+	rapidjson::Value::ConstMemberIterator currentFrame = spriteJSON.FindMember("Frame");
+	
+	if ( assets )
+	{
+		std::shared_ptr< Texture2D > texture;
+		NoMEM::TextureMap textures = assets->getAll< Texture2D >();
+		for (auto textureEntry : textures)
+		{
+			if ( textureEntry.first == textureKey )
+			{
+				texture = textureEntry.second;
+			}
+		}
+		if ( texture )
+		{
+			sprite.texture = texture;
+		}
+		else
+		{
+			// check to see if in custom paths
+			auto found = assets->conf.find(textureKey);
+			if ( found != assets->conf.customEnd() )
+			{
+				texture = assets->addTexture(textureKey, found->second);
+			}
+			if ( texture )
+			{
+				sprite.texture = texture;
+			}
+			else
+			{
+				// try loading from MEMManager's path
+				texture = assets->addTexture(textureKey);
+				if ( texture )
+				{
+					sprite.texture = texture;
+				}
+				else
+				{
+					// try loading as path
+					texture = assets->addTexture(textureKey, textureKey);
+					if ( texture )
+					{
+						sprite.texture == texture;
+					}
+					else
+					{
+						std::cerr << "Could not load texture: " << textureKey << std::endl;
+					}
+				}
+			}
+			if ( texture )
+			{
+				Rectangle renderArea;
+				renderArea.width = texture->width / numFrames;
+				renderArea.height = texture->height;
+				if ( currentFrame != spriteJSON.MemberEnd() )
+				{
+					int framePos = currentFrame->value.GetInt();
+					sprite.currentFrame = framePos;
+					renderArea.x = renderArea.width * framePos;
+				}
+				else
+				{
+					sprite.currentFrame = 0;
+					renderArea.x = 0;
+				}
+				renderArea.y = 0;
+				sprite.renderArea = renderArea;
+			}
+		}
+	}
+	if ( colArray != spriteJSON.MemberEnd() )
+	{
+		col.r = colArray->value[0].GetInt();
+		col.g = colArray->value[1].GetInt();
+		col.b = colArray->value[2].GetInt();
+		col.a = colArray->value[3].GetInt();
+		sprite.col = col;
+	}
+	sprite.frames = numFrames;
+}
+
+void NoECS::deserializeCPoly(NoECS::CPoly& polygon, const rapidjson::Value& polyJSON)
+{
+	Color col;
+	Color outCol;
+	const rapidjson::Value& colArray = polyJSON["Colour"].GetArray();
+	rapidjson::Value::ConstMemberIterator outlineArray = polyJSON.FindMember("Outline");
+	
+	col.r = colArray[0].GetInt();
+	col.g = colArray[1].GetInt();
+	col.b = colArray[2].GetInt();
+	col.a = colArray[3].GetInt();
+	polygon.backCol = col;
+	polygon.sides = polyJSON["Num Sides"].GetInt();
+	polygon.radius = polyJSON["Radius"].GetDouble();
+	if ( outlineArray != polyJSON.MemberEnd() )
+	{
+		outCol.r = outlineArray->value[0].GetInt();
+		outCol.g = outlineArray->value[1].GetInt();
+		outCol.b = outlineArray->value[2].GetInt();
+		outCol.a = outlineArray->value[3].GetInt();
+		polygon.outlineThick = outlineArray->value[4].GetDouble();
+		polygon.outlineCol = outCol;
+	}
+}
+
+void NoECS::deserializeComponents(NoECS::Components& components, const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoECS::CTransform& transformComp = std::get< NoECS::CTransform >(components);
+	NoECS::CBBox& bboxComp = std::get< NoECS::CBBox >(components);
+	NoECS::CSprite& spriteComp = std::get< NoECS::CSprite >(components);
+	NoECS::CPoly& polyComp = std::get< NoECS::CPoly >(components);
+	for (auto& component : compJSON.GetObject())
+	{
+		std::string key(component.name.GetString());
+		if ( key == "Transform" )
+		{
+			transformComp = NoECS::loadCTransform(component.value);
+		}
+		else if ( key == "Bounds" )
+		{
+			bboxComp = NoECS::loadCBBox(component.value);
+		}
+		else if ( key == "Sprite" )
+		{
+			spriteComp = NoECS::loadCSprite(component.value, assets);
+		}
+		else if ( key == "Polygon" )
+		{
+			polyComp = NoECS::loadCPoly(component.value);
+		}
+	}
+}
+
 NoGUI::CText NoGUI::loadCText(const rapidjson::Value& textJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::CText text;
-	deserializeCText(text, textJSON, assets);
+	NoGUI::deserializeCText(text, textJSON, assets);
 	text.owned = true;
 	
 	return text;
@@ -799,7 +1045,7 @@ NoGUI::CText NoGUI::loadCText(const rapidjson::Value& textJSON, std::shared_ptr<
 NoGUI::CImage NoGUI::loadCImage(const rapidjson::Value& imgJSON, std::shared_ptr< NoMEM::MEMManager > assets)
 {
 	NoGUI::CImage img;
-	deserializeCImage(img, imgJSON, assets);
+	NoGUI::deserializeCImage(img, imgJSON, assets);
 	img.owned = true;
 	
 	return img;
@@ -808,7 +1054,7 @@ NoGUI::CImage NoGUI::loadCImage(const rapidjson::Value& imgJSON, std::shared_ptr
 NoGUI::CInput NoGUI::loadCInput(const rapidjson::Value& inputJSON)
 {
 	NoGUI::CInput input;
-	deserializeCInput(input, inputJSON);
+	NoGUI::deserializeCInput(input, inputJSON);
 	input.owned = true;
 	
 	return input;
@@ -817,7 +1063,7 @@ NoGUI::CInput NoGUI::loadCInput(const rapidjson::Value& inputJSON)
 NoGUI::CMultiStyle NoGUI::loadCMultiStyle(const rapidjson::Value& stylesJSON)
 {
 	NoGUI::CMultiStyle styles;
-	deserializeCMultiStyle(styles, stylesJSON);
+	NoGUI::deserializeCMultiStyle(styles, stylesJSON);
 	styles.owned = true;
 	
 	return styles;
@@ -858,7 +1104,51 @@ NoGUI::CDropDown NoGUI::loadCDropDown(const rapidjson::Value& dropJSON, std::sha
 NoGUI::Components NoGUI::loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets, std::shared_ptr< NoGUI::Element > dropParent)
 {
 	NoGUI::Components components;
-	deserializeComponents(components, compJSON, assets, dropParent);
+	NoGUI::deserializeComponents(components, compJSON, assets, dropParent);
+	
+	return components;
+}
+
+NoECS::CTransform NoECS::loadCTransform(const rapidjson::Value& transformJSON)
+{
+	NoECS::CTransform transform;
+	NoECS::deserializeCTransform(transform, transformJSON);
+	transform.owned = true;
+	
+	return transform;
+}
+
+NoECS::CBBox NoECS::loadCBBox(const rapidjson::Value& bboxJSON)
+{
+	NoECS::CBBox bbox;
+	NoECS::deserializeCBBox(bbox, bboxJSON);
+	bbox.owned = true;
+	
+	return bbox;
+}
+
+NoECS::CSprite NoECS::loadCSprite(const rapidjson::Value& spriteJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoECS::CSprite sprite;
+	NoECS::deserializeCSprite(sprite, spriteJSON, assets);
+	sprite.owned = true;
+	
+	return sprite;
+}
+
+NoECS::CPoly NoECS::loadCPoly(const rapidjson::Value& polyJSON)
+{
+	NoECS::CPoly polygon;
+	NoECS::deserializeCPoly(polygon, polyJSON);
+	polygon.owned = true;
+	
+	return polygon;
+}
+
+NoECS::Components NoECS::loadComponents(const rapidjson::Value& compJSON, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoECS::Components components;
+	NoECS::deserializeComponents(components, compJSON, assets);
 	
 	return components;
 }
@@ -921,7 +1211,6 @@ std::shared_ptr< NoGUI::Element > loadElement(const rapidjson::Value::ConstMembe
 						
 		return nullptr;
 	}
-//	newElem->setHoverCol(hovCol);
 	if ( assets )
 	{
 		newElem->setComponents(NoGUI::loadComponents(elemComps, assets));
@@ -977,7 +1266,6 @@ void NoMEM::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 		writer.StartObject();
 			for (auto font : assets->getAll< Font >())
 			{
-//				std::string filePath = (fontPath.front() == '.') ? basePath + "/" + fontPath + font.first : fontPath + font.first; // get full path
 				std::string filePath = basePath + "/" + fontPath + font.first;
 				std::string out = font.first; // relative path
 				if ( FileExists(filePath.c_str()) )
@@ -1022,7 +1310,6 @@ void NoMEM::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 		writer.StartObject();
 			for (auto texture : assets->getAll< Texture2D >())
 			{
-//				std::string filePath = (texturePath.front() == '.') ? basePath + "/" + texturePath + texture.first : texturePath + texture.first; // get full path
 				std::string filePath = basePath + "/" + texturePath + texture.first;
 				std::string out = texture.first; // relative path
 				if ( FileExists(filePath.c_str()) )
@@ -1071,7 +1358,6 @@ void NoMEM::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 		writer.StartObject();
 			for (auto sprite : assets->getAll< NoMEM::Sprite >())
 			{
-//				std::string filePath = (spritePath.front() == '.') ? basePath + "/" + spritePath + sprite.first : spritePath + sprite.first; // get full path
 				std::string filePath = basePath + "/" + spritePath + sprite.first;
 				std::string out = sprite.first;
 				if ( FileExists(filePath.c_str()) )
@@ -1120,7 +1406,6 @@ void NoMEM::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 		writer.StartObject();
 			for (auto sound : assets->getAll< Sound >())
 			{
-//				std::string filePath = (soundPath.front() == '.') ? basePath + "/" + soundPath + sound.first : soundPath + sound.first; // get full path
 				std::string filePath = basePath + "/" + soundPath + sound.first;
 				std::string out = sound.first; // relative path
 				// TODO: figure out what files to support
@@ -1166,7 +1451,6 @@ void NoMEM::serializeAssets(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 		writer.StartObject();
 			for (auto music : assets->getAll< Music >())
 			{
-//				std::string filePath = (musicPath.front() == '.') ? basePath + "/" + musicPath + music.first : musicPath + music.first; // get full path
 				std::string filePath = basePath + "/" + musicPath + music.first;
 				std::string out = music.first; // relative path
 				// TODO: figure out what files to support
@@ -1546,6 +1830,134 @@ void NoGUI::serializeCInput(rapidjson::PrettyWriter< rapidjson::StringBuffer >& 
 	writer.EndObject();
 }
 
+void NoECS::serializeComponents(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, NoECS::Components components, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	NoECS::CTransform transform = std::get< NoECS::CTransform >(components);
+	NoECS::CBBox bbox = std::get< NoECS::CBBox >(components);
+	NoECS::CSprite sprite = std::get< NoECS::CSprite >(components);
+	NoECS::CPoly polygon = std::get< NoECS::CPoly >(components);
+	// Entity Components
+//	writer.Key("Components");
+//	writer.StartObject();
+		if ( transform.owned )
+		{
+			writer.Key("Transform");
+			serializeCTransform(writer, transform);
+		}
+		if ( bbox.owned )
+		{
+			writer.Key("BoundsBox");
+			serializeCBBox(writer, bbox);
+		}
+		if ( sprite.owned )
+		{
+			writer.Key("Sprite");
+			serializeCSprite(writer, sprite, assets);
+		}
+		if ( polygon.owned )
+		{
+			writer.Key("Polygon");
+			serializeCPoly(writer, polygon);
+		}
+//	writer.EndObject();
+}
+
+void NoECS::serializeEntity(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, std::shared_ptr< NoECS::Entity > entity, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	writer.StartObject();
+		writer.Key(std::to_string(entity->getId()).c_str());
+		writer.StartObject();
+			NoECS::serializeComponents(writer, entity->getComponents(), assets);
+		writer.EndObject();
+	writer.EndObject();
+}
+
+void NoECS::serializeCTransform(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CTransform& transform)
+{
+	writer.StartObject();
+		writer.Key("Pos");
+		writer.StartArray();
+			writer.Uint(transform.pos.x);
+			writer.Uint(transform.pos.y);
+			writer.Double(transform.angle);
+		writer.EndArray();
+		writer.Key("Scale");
+		writer.StartArray();
+			writer.Uint(transform.scale.x);
+			writer.Uint(transform.scale.y);
+		writer.EndArray();
+	writer.EndObject();
+}
+
+void NoECS::serializeCBBox(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CBBox& bbox)
+{
+	writer.StartObject();
+		writer.Key("Bounds");
+		writer.StartArray();
+			writer.Uint(bbox.bounds.x);
+			writer.Uint(bbox.bounds.y);
+		writer.EndArray();
+	writer.EndObject();
+}
+
+void NoECS::serializeCSprite(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CSprite& sprite, std::shared_ptr< NoMEM::MEMManager > assets)
+{
+	writer.StartObject();
+		writer.Key("File");
+		std::string imgStr = "";
+		if ( sprite.texture && assets )
+		{
+			NoMEM::TextureMap textures = assets->getAll< Texture2D >();
+			for (auto texture : textures)
+			{
+				if ( texture.second == sprite.texture )
+				{
+					imgStr = texture.first;
+					
+					break;
+				}
+			}
+		}
+		writer.String(imgStr.c_str());
+		writer.Key("Colour");
+		writer.StartArray();
+			writer.Uint(sprite.col.r);
+			writer.Uint(sprite.col.g);
+			writer.Uint(sprite.col.b);
+			writer.Uint(sprite.col.a);
+		writer.EndArray();
+		writer.Key("Num Frames");
+		writer.Uint(sprite.frames);
+		writer.Key("Frame");
+		writer.Uint(sprite.currentFrame);
+	writer.EndObject();
+}
+
+void NoECS::serializeCPoly(rapidjson::PrettyWriter< rapidjson::StringBuffer >& writer, const NoECS::CPoly& polygon)
+{
+	writer.StartObject();
+		writer.Key("Colour");
+		writer.StartArray();
+			writer.Uint(polygon.backCol.r);
+			writer.Uint(polygon.backCol.g);
+			writer.Uint(polygon.backCol.b);
+			writer.Uint(polygon.backCol.a);
+		writer.EndArray();
+		writer.Key("Outline");
+		writer.StartArray();
+			writer.Uint(polygon.outlineCol.r);
+			writer.Uint(polygon.outlineCol.g);
+			writer.Uint(polygon.outlineCol.b);
+			writer.Uint(polygon.outlineCol.a);
+			writer.Double(polygon.outlineThick);
+		writer.EndArray();
+		writer.Key("Num Sides");
+		writer.Uint(polygon.sides);
+		writer.Key("Radius");
+		writer.Double(polygon.radius);
+	writer.EndObject();
+}
+
 int NoPARSE::writeFile(rapidjson::StringBuffer& sb, const std::string& path)
 {
 	std::ofstream out(path);
@@ -1564,7 +1976,7 @@ int NoPARSE::writeFile(rapidjson::StringBuffer& sb, const std::string& path)
 	return 0;
 }
 
-int NoPARSE::readFile(const std::string& path, rapidjson::Document&  d)
+int NoPARSE::readFile(const std::string& path, rapidjson::Document& d)
 {
 	if ( FileExists(path.c_str()) )
 	{

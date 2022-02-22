@@ -4,3 +4,6 @@
 [submodule "NoMEM"]
 	path = NoMEM
 	url = https://github.com/noloitering/NoMEM.git
+[submodule "NoECS"]
+	path = NoECS
+	url = https://github.com/noloitering/NoECS.git

@@ -5,8 +5,8 @@
             "Fonts": "../assets/fonts/",
             "Textures": "../assets/textures/",
             "Sprites": "../assets/textures/sprites/",
-            "Sounds": "../assets/audio/sounds",
-            "Music": "../assets/audio/music"
+            "Sounds": "../assets/audio/sounds/",
+            "Music": "../assets/audio/music/"
         },
         "Fonts": {},
         "Textures": {},
