@@ -17,7 +17,6 @@ int main(int argc, char ** argv)
 	labelText.wrap = NoGUI::TextWrap::DOWN;
 	labelText.margin.y = 2;
 	
-	std::shared_ptr< Texture > texture = assets->addTexture("ImageText", "../imgs/ImageText.png");
 	std::vector< NoGUI::Style > styles;
 	
 	NoGUI::Style elemStyle = {BLACK, RAYWHITE, (Vector2){center.x, 40}, (Vector2){75, 35}, 4, 4, 0};
@@ -37,36 +36,44 @@ int main(int argc, char ** argv)
 	NoGUI::Style comboStyle = {BLACK, RAYWHITE, (Vector2){center.x, boxText.pos.y + spacing}, (Vector2){75, 35}, 4, 4, 0};
 	NoGUI::Style comboText = {INVISIBLE, BLACK, (Vector2){center.x, comboStyle.pos.y + boxStyle.radius.y * 2 + 25}, (Vector2){200, 50}, 4, 4, 0};
 	
+	std::shared_ptr< NoGUI::Page > page = manager.getPage();
+	page->addComponents("Label", std::make_shared< NoGUI::CContainer >());
+	page->addComponents("Base", std::make_shared< NoGUI::CContainer >());
+	page->addComponents("Image", std::make_shared< NoGUI::CContainer >());
+	page->addComponents("Input", std::make_shared< NoGUI::CContainer >());
+	page->addComponents("ZInput", std::make_shared< NoGUI::CContainer >());
+	page->addComponents("Multi", std::make_shared< NoGUI::CContainer >());
+	
+	page->getComponents("Label")->addComponent< NoGUI::CText >(labelText);
+	page->getComponents("Base")->addComponent< NoGUI::CText >(textStyle);
+	page->getComponents("Input")->addComponent< NoGUI::CText >(textStyle);
+	page->getComponents("Input")->addComponent< NoGUI::CInput >();
+	page->getComponents("ZInput")->addComponent< NoGUI::CText >(textStyle);
+	page->getComponents("Multi")->addComponent< NoGUI::CText >(textStyle);
+	page->getComponents("Multi")->addComponent< NoGUI::CMultiStyle >(styles);
+	std::shared_ptr< Texture > texture = std::make_shared< Texture >(LoadTexture("../imgs/ImageText.png"));
+	page->getComponents("Image")->addComponent< NoGUI::CImage >(texture);
+	
 	std::shared_ptr< NoGUI::Element > element = manager.addElement< NoGUI::Element >(elemStyle, "Text", "Base");
 	std::shared_ptr< NoGUI::Element > elemLabel = manager.addElement< NoGUI::Element >(elemText, "draws Element::inner relative to Element's position", "Label");
 	std::shared_ptr< NoGUI::Element > image = manager.addElement< NoGUI::Element >(imageStyle, "Image", "Image");
 	std::shared_ptr< NoGUI::Element > imageLabel = manager.addElement< NoGUI::Element >(imageText, "draws a texture relative to Element's position", "Label");
 	std::shared_ptr< NoGUI::Element > input = manager.addElement< NoGUI::Input >(inputStyle, "Input", "Input");
 	std::shared_ptr< NoGUI::Element > inputLabel = manager.addElement< NoGUI::Element >(inputText, "can enter/remove characters when hovering over", "Label");
-	std::shared_ptr< NoGUI::Element > box = manager.addElement< NoGUI::Element >(boxStyle, "Multi Style", "Input");
+	std::shared_ptr< NoGUI::Element > box = manager.addElement< NoGUI::Element >(boxStyle, "Multi Style", "Multi");
 	std::shared_ptr< NoGUI::Element > boxLabel = manager.addElement< NoGUI::Element >(boxText, "Draws multiple shapes relative to Element's position", "Label");
 	std::shared_ptr< NoGUI::Element > combo = manager.addElement< NoGUI::Input >(comboStyle, "Drop Down", "ZInput");
 	std::shared_ptr< NoGUI::Element > comboLabel = manager.addElement< NoGUI::Element >(comboText, "Draws multiple elements relative to Element's position on focus", "Label");
 	std::shared_ptr< NoGUI::DropDown > dropdown = manager.addDropDown(combo, NoGUI::TextWrap::DOWN);
-	dropdown->addComponent< NoGUI::CText >(textStyle);
+	dropdown->addComponents("Option", std::make_shared< NoGUI::CContainer >());
+	dropdown->getComponents("Option")->addComponent< NoGUI::CText >(textStyle);
 	std::shared_ptr< NoGUI::Element > option1 = dropdown->addElement< NoGUI::Button >("Option 1");
 	std::shared_ptr< NoGUI::Element > option2 = dropdown->addElement< NoGUI::Button >("Option 2");
-	
-	elemLabel->addComponent< NoGUI::CText >(labelText);
-	imageLabel->addComponent< NoGUI::CText >(labelText);
-	inputLabel->addComponent< NoGUI::CText >(labelText);
-	boxLabel->addComponent< NoGUI::CText >(labelText);
-	comboLabel->addComponent< NoGUI::CText >(labelText);
-	element->addComponent< NoGUI::CText >(textStyle);
-	image->addComponent< NoGUI::CImage >(texture);
-	input->addComponent< NoGUI::CText >(textStyle);
-	input->addComponent< NoGUI::CInput >();
-	box->addComponent< NoGUI::CMultiStyle >(styles);
-	box->addComponent< NoGUI::CText >(textStyle);
-	combo->addComponent< NoGUI::CText >(textStyle);
 	manager.update();
 	NoGUI::savePage(manager.getPage(0), assets);
+	std::cout << "loading copy!" << std::endl;
 	std::shared_ptr< NoGUI::Page > testPg = NoGUI::loadPage("./page.json", assets);
+	std::cout << "saving copy!" << std::endl;
 	NoGUI::savePage(testPg, assets, "./page(copy).json");
 	assets->clear();
 	

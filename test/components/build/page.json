@@ -15,686 +15,569 @@
         "Music": {},
         "Custom": {
             "Fonts": {},
-            "Textures": {
-                "ImageText": "../imgs/ImageText.png"
-            },
+            "Textures": {},
             "Sprites": {},
             "Sounds": {},
             "Music": {}
         }
     },
-    "Components": {},
-    "Elements": {
-        "Base": [
-            {
-                "Element": {
-                    "ID": "0",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        40
-                    ],
-                    "Size": [
-                        75,
-                        35
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Outline": [
-                        245,
-                        245,
-                        245,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Inner": "Text",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                0.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "NONE",
-                            "Align": "CENTER",
-                            "Cropping": "NONE"
-                        }
-                    }
-                }
+    "Components": {
+        "Base": {
+            "Text": {
+                "Font": "",
+                "Size": 20.0,
+                "Colour": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "Margin": [
+                    0.0,
+                    0.0
+                ],
+                "Whitespace": [
+                    4.0,
+                    0.0
+                ],
+                "Angle": 0.0,
+                "Wrapping": "NONE",
+                "Align": "CENTER",
+                "Cropping": "NONE"
             }
-        ],
-        "Image": [
-            {
-                "Element": {
-                    "ID": "2",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        235
-                    ],
-                    "Size": [
-                        75,
-                        35
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Outline": [
-                        245,
-                        245,
-                        245,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Inner": "Image",
-                    "Components": {
-                        "Image": {
-                            "File": "ImageText",
-                            "Scale": [
-                                1.0,
-                                1.0
-                            ],
-                            "Margin": [
-                                0.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Cropping": "FIT",
-                            "Back Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ]
-                        }
-                    }
-                }
+        },
+        "Image": {
+            "Image": {
+                "File": "",
+                "Scale": [
+                    1.0,
+                    1.0
+                ],
+                "Margin": [
+                    0.0,
+                    0.0
+                ],
+                "Angle": 0.0,
+                "Cropping": "FIT",
+                "Back Colour": [
+                    255,
+                    255,
+                    255,
+                    255
+                ]
             }
-        ],
-        "Input": [
-            {
-                "Input": {
-                    "ID": "4",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        430
-                    ],
-                    "Size": [
-                        75,
-                        35
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Outline": [
-                        245,
-                        245,
-                        245,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Inner": "Input",
-                    "Components": {
-                        "Input": {
-                            "Max": 256,
-                            "Index": 0
-                        },
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                0.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "NONE",
-                            "Align": "CENTER",
-                            "Cropping": "NONE"
-                        }
-                    }
-                }
+        },
+        "Input": {
+            "Input": {
+                "Max": 256,
+                "Index": 0
             },
-            {
-                "Element": {
-                    "ID": "6",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        625
-                    ],
-                    "Size": [
-                        75,
-                        35
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Outline": [
-                        245,
-                        245,
-                        245,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Inner": "Multi Style",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                0.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "NONE",
-                            "Align": "CENTER",
-                            "Cropping": "NONE"
-                        },
-                        "MultiStyle": {
-                            "Styles": [
-                                {
-                                    "Num Sides": 3,
-                                    "Position": [
-                                        4294967246,
-                                        0
-                                    ],
-                                    "Size": [
-                                        25,
-                                        25
-                                    ],
-                                    "Colour": [
-                                        0,
-                                        0,
-                                        0,
-                                        255
-                                    ],
-                                    "Outline": [
-                                        245,
-                                        245,
-                                        245,
-                                        255,
-                                        1
-                                    ]
-                                },
-                                {
-                                    "Num Sides": 0,
-                                    "Position": [
-                                        0,
-                                        0
-                                    ],
-                                    "Size": [
-                                        25,
-                                        25
-                                    ],
-                                    "Colour": [
-                                        0,
-                                        0,
-                                        0,
-                                        255
-                                    ],
-                                    "Outline": [
-                                        245,
-                                        245,
-                                        245,
-                                        255,
-                                        1
-                                    ]
-                                },
-                                {
-                                    "Num Sides": 4,
-                                    "Position": [
-                                        50,
-                                        0
-                                    ],
-                                    "Size": [
-                                        25,
-                                        25
-                                    ],
-                                    "Colour": [
-                                        0,
-                                        0,
-                                        0,
-                                        255
-                                    ],
-                                    "Outline": [
-                                        245,
-                                        245,
-                                        245,
-                                        255,
-                                        1
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                }
+            "Text": {
+                "Font": "",
+                "Size": 20.0,
+                "Colour": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "Margin": [
+                    0.0,
+                    0.0
+                ],
+                "Whitespace": [
+                    4.0,
+                    0.0
+                ],
+                "Angle": 0.0,
+                "Wrapping": "NONE",
+                "Align": "CENTER",
+                "Cropping": "NONE"
             }
-        ],
-        "Label": [
-            {
-                "Element": {
-                    "ID": "1",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        135
-                    ],
-                    "Size": [
-                        200,
-                        50
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Outline": [
-                        0,
-                        0,
-                        0,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Inner": "draws Element::inner relative to Element's position",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                2.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "DOWN",
-                            "Align": "TOP",
-                            "Cropping": "NONE"
-                        }
-                    }
-                }
-            },
-            {
-                "Element": {
-                    "ID": "3",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        330
-                    ],
-                    "Size": [
-                        200,
-                        50
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Outline": [
-                        0,
-                        0,
-                        0,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Inner": "draws a texture relative to Element's position",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                2.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "DOWN",
-                            "Align": "TOP",
-                            "Cropping": "NONE"
-                        }
-                    }
-                }
-            },
-            {
-                "Element": {
-                    "ID": "5",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        525
-                    ],
-                    "Size": [
-                        200,
-                        50
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Outline": [
-                        0,
-                        0,
-                        0,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Inner": "can enter/remove characters when hovering over",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                2.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "DOWN",
-                            "Align": "TOP",
-                            "Cropping": "NONE"
-                        }
-                    }
-                }
-            },
-            {
-                "Element": {
-                    "ID": "7",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        720
-                    ],
-                    "Size": [
-                        200,
-                        50
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Outline": [
-                        0,
-                        0,
-                        0,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Inner": "Draws multiple shapes relative to Element's position",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                2.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "DOWN",
-                            "Align": "TOP",
-                            "Cropping": "NONE"
-                        }
-                    }
-                }
-            },
-            {
-                "Element": {
-                    "ID": "9",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        915
-                    ],
-                    "Size": [
-                        200,
-                        50
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Outline": [
-                        0,
-                        0,
-                        0,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Inner": "Draws multiple elements relative to Element's position on focus",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                2.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "DOWN",
-                            "Align": "TOP",
-                            "Cropping": "NONE"
-                        }
-                    }
-                }
+        },
+        "Label": {
+            "Text": {
+                "Font": "",
+                "Size": 20.0,
+                "Colour": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "Margin": [
+                    0.0,
+                    2.0
+                ],
+                "Whitespace": [
+                    4.0,
+                    0.0
+                ],
+                "Angle": 0.0,
+                "Wrapping": "DOWN",
+                "Align": "TOP",
+                "Cropping": "NONE"
             }
-        ],
-        "ZInput": [
-            {
-                "Input": {
-                    "ID": "8",
-                    "Num Sides": 4,
-                    "Position": [
-                        640,
-                        820
-                    ],
-                    "Size": [
-                        75,
-                        35
-                    ],
-                    "Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Outline": [
-                        245,
-                        245,
-                        245,
-                        255,
-                        4
-                    ],
-                    "Hover Colour": [
-                        0,
-                        0,
-                        0,
-                        255
-                    ],
-                    "Inner": "Drop Down",
-                    "Components": {
-                        "Text": {
-                            "Font": "",
-                            "Size": 20.0,
-                            "Colour": [
-                                255,
-                                255,
-                                255,
-                                255
-                            ],
-                            "Margin": [
-                                0.0,
-                                0.0
-                            ],
-                            "Whitespace": [
-                                4.0,
-                                0.0
-                            ],
-                            "Angle": 0.0,
-                            "Wrapping": "NONE",
-                            "Align": "CENTER",
-                            "Cropping": "NONE"
-                        },
-                        "DropDown": {
-                            "File": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/8.json",
-                            "Wrapping": "DOWN"
-                        }
+        },
+        "Multi": {
+            "Text": {
+                "Font": "",
+                "Size": 20.0,
+                "Colour": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "Margin": [
+                    0.0,
+                    0.0
+                ],
+                "Whitespace": [
+                    4.0,
+                    0.0
+                ],
+                "Angle": 0.0,
+                "Wrapping": "NONE",
+                "Align": "CENTER",
+                "Cropping": "NONE"
+            },
+            "MultiStyle": {
+                "Styles": [
+                    {
+                        "Num Sides": 3,
+                        "Position": [
+                            -50.0,
+                            0.0
+                        ],
+                        "Size": [
+                            25.0,
+                            25.0
+                        ],
+                        "Colour": [
+                            0,
+                            0,
+                            0,
+                            255
+                        ],
+                        "Outline": [
+                            245,
+                            245,
+                            245,
+                            255,
+                            1
+                        ]
+                    },
+                    {
+                        "Num Sides": 0,
+                        "Position": [
+                            0.0,
+                            0.0
+                        ],
+                        "Size": [
+                            25.0,
+                            25.0
+                        ],
+                        "Colour": [
+                            0,
+                            0,
+                            0,
+                            255
+                        ],
+                        "Outline": [
+                            245,
+                            245,
+                            245,
+                            255,
+                            1
+                        ]
+                    },
+                    {
+                        "Num Sides": 4,
+                        "Position": [
+                            50.0,
+                            0.0
+                        ],
+                        "Size": [
+                            25.0,
+                            25.0
+                        ],
+                        "Colour": [
+                            0,
+                            0,
+                            0,
+                            255
+                        ],
+                        "Outline": [
+                            245,
+                            245,
+                            245,
+                            255,
+                            1
+                        ]
                     }
-                }
+                ]
             }
-        ]
-    }
+        },
+        "ZInput": {
+            "Text": {
+                "Font": "",
+                "Size": 20.0,
+                "Colour": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "Margin": [
+                    0.0,
+                    0.0
+                ],
+                "Whitespace": [
+                    4.0,
+                    0.0
+                ],
+                "Angle": 0.0,
+                "Wrapping": "NONE",
+                "Align": "CENTER",
+                "Cropping": "NONE"
+            },
+            "DropDown": {
+                "File": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/ZInput.json",
+                "Wrapping": "DOWN"
+            }
+        }
+    },
+    "Elements": [
+        {
+            "Type": "Element",
+            "Components": "Base",
+            "Inner": "Text",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                40.0
+            ],
+            "Size": [
+                75.0,
+                35.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                255
+            ],
+            "Outline": [
+                245,
+                245,
+                245,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                255
+            ]
+        },
+        {
+            "Type": "Element",
+            "Components": "Label",
+            "Inner": "draws Element::inner relative to Element's position",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                135.0
+            ],
+            "Size": [
+                200.0,
+                50.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Outline": [
+                0,
+                0,
+                0,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "Type": "Element",
+            "Components": "Image",
+            "Inner": "Image",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                235.0
+            ],
+            "Size": [
+                75.0,
+                35.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                255
+            ],
+            "Outline": [
+                245,
+                245,
+                245,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                255
+            ]
+        },
+        {
+            "Type": "Element",
+            "Components": "Label",
+            "Inner": "draws a texture relative to Element's position",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                330.0
+            ],
+            "Size": [
+                200.0,
+                50.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Outline": [
+                0,
+                0,
+                0,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "Type": "Input",
+            "Components": "Input",
+            "Inner": "Input",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                430.0
+            ],
+            "Size": [
+                75.0,
+                35.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                255
+            ],
+            "Outline": [
+                245,
+                245,
+                245,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                255
+            ]
+        },
+        {
+            "Type": "Element",
+            "Components": "Label",
+            "Inner": "can enter/remove characters when hovering over",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                525.0
+            ],
+            "Size": [
+                200.0,
+                50.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Outline": [
+                0,
+                0,
+                0,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "Type": "Element",
+            "Components": "Multi",
+            "Inner": "Multi Style",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                625.0
+            ],
+            "Size": [
+                75.0,
+                35.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                255
+            ],
+            "Outline": [
+                245,
+                245,
+                245,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                255
+            ]
+        },
+        {
+            "Type": "Element",
+            "Components": "Label",
+            "Inner": "Draws multiple shapes relative to Element's position",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                720.0
+            ],
+            "Size": [
+                200.0,
+                50.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Outline": [
+                0,
+                0,
+                0,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "Type": "Input",
+            "Components": "ZInput",
+            "Inner": "Drop Down",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                820.0
+            ],
+            "Size": [
+                75.0,
+                35.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                255
+            ],
+            "Outline": [
+                245,
+                245,
+                245,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                255
+            ]
+        },
+        {
+            "Type": "Element",
+            "Components": "Label",
+            "Inner": "Draws multiple elements relative to Element's position on focus",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                915.0
+            ],
+            "Size": [
+                200.0,
+                50.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Outline": [
+                0,
+                0,
+                0,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                0,
+                0,
+                0,
+                1
+            ]
+        }
+    ]
 }
