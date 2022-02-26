@@ -32,7 +32,7 @@ int main(int argc, char ** argv)
 	hostText.margin = (Vector2){3, 0};
 	NoGUI::CText hostLabelStyle = labelStyle; // copy
 	hostLabelStyle.align = NoGUI::TextAlign::LEFT;
-	manager.getPage()->addComponent< NoGUI::CText >(labelStyle);
+	std::shared_ptr< NoGUI::Page > pg = manager.getPage();
 	// Styles
 	NoGUI::Style backStyle = {BACKGROUND, BLACK, (Vector2){center.x, center.y + 25}, (Vector2){center.x, center.y - 25}, 4, 0, 0};
 	NoGUI::Style IPStyle = {INVISIBLE, BLACK, (Vector2){center.x, center.y - 250}, (Vector2){112, 25}, 4, 0, 0};
@@ -45,32 +45,31 @@ int main(int argc, char ** argv)
 	NoGUI::Style portInStyle = {LIGHTGRAY, BLACK, (Vector2){portStyle.pos.x, portStyle.pos.y + 30}, (Vector2){112, 25}, 4, 2, 0};
 	NoGUI::Style nameInStyle = {LIGHTGRAY, BLACK, (Vector2){nameStyle.pos.x, nameStyle.pos.y + 30}, (Vector2){112, 25}, 4, 2, 0};
 	NoGUI::Style msgInStyle = {LIGHTGRAY, BLACK, (Vector2){msgStyle.pos.x, sendStyle.pos.y}, (Vector2){112, 25}, 4, 2, 0};
-	// elements
-	std::shared_ptr< NoGUI::Element > imgLabel = manager.getPage()->addElement< NoGUI::Element >(backStyle, "Background", "AImage", "BackgroundImg");
-	std::shared_ptr< NoGUI::Element > connectButton = manager.getPage()->addElement< NoGUI::Button >(connectStyle, "Connect", "Button", "Launcher");
-	std::shared_ptr< NoGUI::Element > sendButton = manager.getPage()->addElement< NoGUI::Button >(sendStyle, "SEND", "Button");
-	std::shared_ptr< NoGUI::Element > IPLabel = manager.getPage()->addElement< NoGUI::Element >(IPStyle, "IP Address:", "Label");
-	std::shared_ptr< NoGUI::Element > portLabel = manager.getPage()->addElement< NoGUI::Element >(portStyle, "Port:", "Label");
-	std::shared_ptr< NoGUI::Element > nameLabel = manager.getPage()->addElement< NoGUI::Element >(nameStyle, "Username:", "Label");
-	std::shared_ptr< NoGUI::Element > msgLabel = manager.getPage()->addElement< NoGUI::Element >(msgStyle, "Message:", "Label");
-	std::shared_ptr< NoGUI::Element > IPInput = manager.getPage()->addElement< NoGUI::Input >(IPInStyle, "", "Input", "IP");
-	std::shared_ptr< NoGUI::Element > portInput = manager.getPage()->addElement< NoGUI::Input >(portInStyle, "", "Input", "Port");
-	std::shared_ptr< NoGUI::Element > nameInput = manager.getPage()->addElement< NoGUI::Input >(nameInStyle, "", "Input", "Username");
-	std::shared_ptr< NoGUI::Element > msgInput = manager.getPage()->addElement< NoGUI::Input >(msgInStyle, "", "Input", "Msg");
-	// components
-	IPLabel->addComponent< NoGUI::CText >(labelStyle);
-	connectButton->addComponent< NoGUI::CText >(buttonStyle);
-	sendButton->addComponent< NoGUI::CText >(buttonStyle);
-	imgLabel->addComponent< NoGUI::CImage >(joinImg);
-	IPInput->addComponent< NoGUI::CText >(inputStyle);
-	portInput->addComponent< NoGUI::CText >(inputStyle);
-	nameInput->addComponent< NoGUI::CText >(inputStyle);
-	msgInput->addComponent< NoGUI::CText >(inputStyle);
-	IPInput->addComponent< NoGUI::CInput >(50);
-	portInput->addComponent< NoGUI::CInput >(10);
-	nameInput->addComponent< NoGUI::CInput >(50);
-	msgInput->addComponent< NoGUI::CInput >(200);
+	// Components
+	pg->addComponents("AImage", std::make_shared< NoGUI::CContainer >());
+	pg->addComponents("Button", std::make_shared< NoGUI::CContainer >());
+	pg->addComponents("Label", std::make_shared< NoGUI::CContainer >());
+	pg->addComponents("Input", std::make_shared< NoGUI::CContainer >());
+	
+	pg->getComponents("Label")->addComponent< NoGUI::CText >(labelStyle);
+	pg->getComponents("Button")->addComponent< NoGUI::CText >(buttonStyle);
+	pg->getComponents("Input")->addComponent< NoGUI::CText >(inputStyle);
+	pg->getComponents("Input")->addComponent< NoGUI::CInput >(200);
+	pg->getComponents("AImage")->addComponent< NoGUI::CImage >(joinImg);
+	// Elements
+	std::shared_ptr< NoGUI::Element > imgLabel = pg->addElement< NoGUI::Element >(backStyle, "AImage", "Background");
+	std::shared_ptr< NoGUI::Element > connectButton = pg->addElement< NoGUI::Button >(connectStyle, "Button", "Connect");
+	std::shared_ptr< NoGUI::Element > sendButton = pg->addElement< NoGUI::Button >(sendStyle, "Button", "SEND");
+	std::shared_ptr< NoGUI::Element > IPLabel = pg->addElement< NoGUI::Element >(IPStyle, "Label", "IP Address:");
+	std::shared_ptr< NoGUI::Element > portLabel = pg->addElement< NoGUI::Element >(portStyle, "Label", "Port:");
+	std::shared_ptr< NoGUI::Element > nameLabel = pg->addElement< NoGUI::Element >(nameStyle, "Label", "Username:");
+	std::shared_ptr< NoGUI::Element > msgLabel = pg->addElement< NoGUI::Element >(msgStyle, "Label", "Message:");
+	std::shared_ptr< NoGUI::Element > IPInput = pg->addElement< NoGUI::Input >(IPInStyle, "Input", "");
+	std::shared_ptr< NoGUI::Element > portInput = pg->addElement< NoGUI::Input >(portInStyle, "Input", "");
+	std::shared_ptr< NoGUI::Element > nameInput = pg->addElement< NoGUI::Input >(nameInStyle, "Input", "");
+	std::shared_ptr< NoGUI::Element > msgInput = pg->addElement< NoGUI::Input >(msgInStyle, "Input", "");
 	manager.update();
+	
 	NoMEM::saveAssets(assets);
 	NoGUI::savePage(manager.getPage(0), assets);
 	std::shared_ptr< NoGUI::Page > testPg = NoGUI::loadPage("./page.json", assets);

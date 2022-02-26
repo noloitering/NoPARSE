@@ -418,39 +418,39 @@ void NoGUI::deserializePage(rapidjson::Document& d, std::shared_ptr< NoGUI::Page
 		hovCol.a = hoverArray[3].GetInt();
 		if ( elemType == "Element" )
 		{
-			newElem = pg->addElement< NoGUI::Element >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::Element >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "CheckBox" )
 		{
-			newElem = pg->addElement< NoGUI::CheckBox >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::CheckBox >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "Button" )
 		{
-			newElem = pg->addElement< NoGUI::Button >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::Button >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "Input" )
 		{
-			newElem = pg->addElement< NoGUI::Input >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::Input >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "InputButton" )
 		{
-			newElem = pg->addElement< NoGUI::InputButton >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::InputButton >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "InputToggle" )
 		{
-			newElem = pg->addElement< NoGUI::InputToggle >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::InputToggle >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "InputTrigger" )
 		{
-			newElem = pg->addElement< NoGUI::InputTrigger >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::InputTrigger >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "Toggle" )
 		{
-			newElem = pg->addElement< NoGUI::Toggle >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::Toggle >(elemStyle, elemTag, elemInner);
 		}
 		else if ( elemType == "Trigger" )
 		{
-			newElem = pg->addElement< NoGUI::Trigger >(elemStyle, elemInner, elemTag);
+			newElem = pg->addElement< NoGUI::Trigger >(elemStyle, elemTag, elemInner);
 		}
 		else
 		{
