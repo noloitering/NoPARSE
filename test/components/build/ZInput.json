@@ -1,0 +1,118 @@
+{
+    "Assets": {
+        "Config": {
+            "Base": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\components\\build/",
+            "Fonts": "../assets/fonts/",
+            "Textures": "../assets/textures/",
+            "Sprites": "../assets/textures/sprites/",
+            "Sounds": "../assets/audio/sounds/",
+            "Music": "../assets/audio/music/"
+        },
+        "Fonts": {},
+        "Textures": {},
+        "Sprites": {},
+        "Sounds": {},
+        "Music": {},
+        "Custom": {
+            "Fonts": {},
+            "Textures": {},
+            "Sprites": {},
+            "Sounds": {},
+            "Music": {}
+        }
+    },
+    "Components": {
+        "Option": {
+            "Text": {
+                "Font": "",
+                "Size": 20.0,
+                "Colour": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "Margin": [
+                    0.0,
+                    0.0
+                ],
+                "Whitespace": [
+                    4.0,
+                    0.0
+                ],
+                "Angle": 0.0,
+                "Wrapping": "NONE",
+                "Align": "CENTER",
+                "Cropping": "NONE"
+            }
+        }
+    },
+    "Elements": [
+        {
+            "Type": "Button",
+            "Components": "Option",
+            "Inner": "Option 1",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                894.0
+            ],
+            "Size": [
+                75.0,
+                35.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                255
+            ],
+            "Outline": [
+                245,
+                245,
+                245,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                246,
+                246,
+                246,
+                255
+            ]
+        },
+        {
+            "Type": "Button",
+            "Components": "Option",
+            "Inner": "Option 2",
+            "Num Sides": 4,
+            "Position": [
+                640.0,
+                964.0
+            ],
+            "Size": [
+                75.0,
+                35.0
+            ],
+            "Colour": [
+                0,
+                0,
+                0,
+                255
+            ],
+            "Outline": [
+                245,
+                245,
+                245,
+                255,
+                4
+            ],
+            "Hover Colour": [
+                246,
+                246,
+                246,
+                255
+            ]
+        }
+    ]
+}

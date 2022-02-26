@@ -1,0 +1,219 @@
+{
+    "Assets": {
+        "Config": {
+            "Base": "C:\\Users\\ErcBert\\Documents\\No_Loitering\\Code\\C++\\ANDOR\\NoPARSE\\test\\entity\\build/",
+            "Fonts": "../assets/fonts/",
+            "Textures": "../assets/textures/",
+            "Sprites": "../assets/textures/sprites/",
+            "Sounds": "../assets/audio/sounds/",
+            "Music": "../assets/audio/music/"
+        },
+        "Fonts": {},
+        "Textures": {},
+        "Sprites": {},
+        "Sounds": {},
+        "Music": {},
+        "Custom": {
+            "Fonts": {},
+            "Textures": {},
+            "Sprites": {
+                "player": "../resources/player3.png"
+            },
+            "Sounds": {},
+            "Music": {}
+        }
+    },
+    "Total": 6,
+    "Entities": {
+        "tile": [
+            {
+                "1": {
+                    "Transform": {
+                        "Pos": [
+                            0.0,
+                            656.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "Polygon": {
+                        "Colour": [
+                            130,
+                            130,
+                            130,
+                            255
+                        ],
+                        "Outline": [
+                            0,
+                            0,
+                            0,
+                            255,
+                            2.0
+                        ],
+                        "Num Sides": 4,
+                        "Radius": 32.0
+                    }
+                }
+            },
+            {
+                "2": {
+                    "Transform": {
+                        "Pos": [
+                            64.0,
+                            656.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "Polygon": {
+                        "Colour": [
+                            130,
+                            130,
+                            130,
+                            255
+                        ],
+                        "Outline": [
+                            0,
+                            0,
+                            0,
+                            255,
+                            2.0
+                        ],
+                        "Num Sides": 4,
+                        "Radius": 32.0
+                    }
+                }
+            },
+            {
+                "3": {
+                    "Transform": {
+                        "Pos": [
+                            128.0,
+                            656.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "Polygon": {
+                        "Colour": [
+                            130,
+                            130,
+                            130,
+                            255
+                        ],
+                        "Outline": [
+                            0,
+                            0,
+                            0,
+                            255,
+                            2.0
+                        ],
+                        "Num Sides": 4,
+                        "Radius": 32.0
+                    }
+                }
+            },
+            {
+                "4": {
+                    "Transform": {
+                        "Pos": [
+                            192.0,
+                            656.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "Polygon": {
+                        "Colour": [
+                            130,
+                            130,
+                            130,
+                            255
+                        ],
+                        "Outline": [
+                            0,
+                            0,
+                            0,
+                            255,
+                            2.0
+                        ],
+                        "Num Sides": 4,
+                        "Radius": 32.0
+                    }
+                }
+            },
+            {
+                "5": {
+                    "Transform": {
+                        "Pos": [
+                            192.0,
+                            528.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "Polygon": {
+                        "Colour": [
+                            130,
+                            130,
+                            130,
+                            255
+                        ],
+                        "Outline": [
+                            0,
+                            0,
+                            0,
+                            255,
+                            2.0
+                        ],
+                        "Num Sides": 4,
+                        "Radius": 32.0
+                    }
+                }
+            }
+        ],
+        "player": [
+            {
+                "0": {
+                    "Transform": {
+                        "Pos": [
+                            64.0,
+                            192.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "Sprite": {
+                        "File": "",
+                        "Colour": [
+                            255,
+                            255,
+                            255,
+                            255
+                        ],
+                        "Num Frames": 8,
+                        "Frame": 1
+                    }
+                }
+            }
+        ]
+    }
+}
