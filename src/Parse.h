@@ -4,9 +4,9 @@
 #include <fstream>
 
 
-#include "../NoGUI/src/GUI.h"
-#include "../NoMEM/src/NoMEM.h"
-#include "../NoECS/src/Entity.h"
+#include "../../NoGUI/src/GUI.h"
+#include "../../NoMEM/src/NoMEM.h"
+#include "../../NoECS/src/Entity.h"
 #include "../include/rapidjson/document.h"
 #include "../include/rapidjson/filereadstream.h"
 #include "../include/rapidjson/prettywriter.h"
